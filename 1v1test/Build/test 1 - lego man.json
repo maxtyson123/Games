@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "MirrorTutorial1",
+"productVersion": "0.1",
+"dataUrl": "test 1 - lego man.data.unityweb",
+"wasmCodeUrl": "test 1 - lego man.wasm.code.unityweb",
+"wasmFrameworkUrl": "test 1 - lego man.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.3.11f1"
+}
