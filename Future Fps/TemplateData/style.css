@@ -13,6 +13,6 @@
 
 .webgl-content .footer {margin-top: 5px; height: 38px; line-height: 38px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;}
 .webgl-content .footer .webgl-logo, .title, .fullscreen {height: 100%; display: inline-block; background: transparent center no-repeat;}
-.webgl-content .footer .webgl-logo {background-image: url('webgl-logo.png'); width: 204px; float: left;}
+.webgl-content .footer .webgl-logo {background-image: url('https://uploads-ssl.webflow.com/5f265b390311fc930902d4f6/5f27a27cccdebb657270e3a0_Max%20Inc%20Logo%20(1)-p-500.png'); width: 204px; float: left;}
 .webgl-content .footer .title {margin-right: 10px; float: right;}
 .webgl-content .footer .fullscreen {background-image: url('fullscreen.png'); width: 38px; float: right;}
