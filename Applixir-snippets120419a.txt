@@ -1,0 +1,80 @@
+******************************* Basic Integration Snippets **********************************
+
+The following snippets will provide the ability to show and track ads. For some users this may be all you need or you can start adding other features once the basic integration is verified.
+
+The first snippet should be placed as close as possible to the opening <body> tag. Because it's only used to associate the video playing system with your app/game it won't affect any visual aspects of your design. Placing the snippet after other divs may cause the player to be hidden.
+
+<div id="applixir_vanishing_div" hidden>
+   <iframe id="applixir_parent" allow="autoplay"></iframe>
+</div>
+
+If you want to allow fullscreen, then use this version of the anchor snippet:
+
+<div id="applixir_vanishing_div" hidden>
+   <iframe id="applixir_parent" allow="autoplay, fullscreen"></iframe>
+</div>
+
+This snippet can be placed anywhere after the above snippet but will typically be located near the bottom of your index.html (or other) file. All the current callback does is write the callback events to the JavaScript log but as you build out your integration you can handle events to inform your users of issues (e.g. they have an ad-blocker installed) or to coordinate actions between systems such as when the player opens and closes.
+
+    <script type='application/javascript'>
+        function adStatusCallback(status) {
+            if (status)
+                console.log('Applixir status: ' + status);
+        }
+
+The following snippet should be placed immediately following the callback snippet. You will need to enter the correct values in place of 'nnnn' and to comment out any options you don't want to use. The only required value is zoneId but it's recommended to start with devId (Account ID) from the "Account" page and gameId from the "Games" page (zoneId is also found on the "Games" page).
+
+        var options = {
+            zoneId: nnnn,
+            devId: nnnn,
+            gameId: nnnn,
+            custom1: nnnn,  // optional values such as user ID
+            custom2: nnnn,  // optional values such as reward information
+            dMode: 1,       // dMode 1 for MD5 checksum 0 for no MD5 checksum
+            adStatusCb: adStatusCallback,
+        };
+        invokeApplixirVideoUnit(options);
+    </script>
+
+The following snippet can go in the head or at near the closing body tag depending on when you want the system to load:
+
+<script type='text/javascript' src="https://cdn.applixir.com/applixir.sdk3.0m.js"></script>
+
+
+************************************** z2 Window Snippets ***************************************
+
+These snippets are used to implement the z2 Window Option and are not otherwise needed. The z2 Window option will allow you to show ads if your app/game is being used in a location where you cannot place an ads.txt file in that location or post your ad network ID's in the ads.txt file currently installed at that location (which means you probably cannot show ads). The z2 Window option will allow you to place an ads.txt file in the root folder of your app/game and to show ads based on that ads.txt file.
+
+The following snippet is used to pass the options to the z2 window and catch the events coming from the z2window. It's best to locate this code after the existing Applixir options but before the call to invokeApplixirVideoUnit. 
+
+            window.addEventListener('message', function initZ2(e) {
+	    // The following if statement is recommended after initial tests
+            /*  if (e.origin !== "https://my.gamedomain.com") {
+                    return;
+                } */ 
+                if (e.data == 'sys-closing') {
+                    window.removeEventListener('message', initZ2, false);
+                } else if (e.data == 'z2-ready') {
+                    var options2 = {
+                        zoneId: nnnn,
+                        devId: nnnn,
+                        gameId: nnnn,
+                        custom1: ??,
+                        custom2: ??,
+                        dMode: 1,     // 1 for MD5 checksum, 0 for no MD5 checksum
+                        fallback: n,
+                        verbosity: n,
+                        vtos: 2,	// do not change unless placement adjustment is needed
+                        htos: 3,	//  	"		"		"
+                    }
+                    // recommended: replace "*" with "https://my.gamedomain.com" after initial tests
+                    e.source.postMessage("loadOptions=" + JSON.stringify(options2), "*");
+                    return;
+                }
+                adStatusCallback(e.data);
+            }, false);
+
+Add this entry to your existing options:
+
+            z2url: "https://my.gamedomain.com/z2index.html", // replace with correct game location
+
