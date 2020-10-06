@@ -1,0 +1,8 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+98maxt98.wixsite.com	TRUE	/website-3	FALSE	1999999999	svSession	0933d5c753a7fe11040296140e9b3f6f498f7f3efde6594b35268437781d83c3cd26c58da3ec96b0902feae14e04b6391e60994d53964e647acf431e4f798bcd6a7b87ed150fd7b4b28df339e730e1ec5e92149261bd8867f3fa6b46dded63a7
+98maxt98.wixsite.com	TRUE	/	FALSE	1999999999	XSRF-TOKEN	1601584432|Ay5iL0p7nO-U
+98maxt98.wixsite.com	TRUE	/	FALSE	1999999999	SameSite	None
+98maxt98.wixsite.com	TRUE	/	FALSE	1999999999	hs	1054861562
+98maxt98.wixsite.com	TRUE	/	FALSE	1999999999	ssr-caching	cache#desc=miss#varnish=miss#dc#desc=ause1"
+
