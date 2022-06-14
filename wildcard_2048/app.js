@@ -6,7 +6,7 @@ if (!window.location.href.includes("index.html")) {
 //make ai, ai give hint or image
 
 //NEXT:
-//Savin andloading via setting
+//Savin and loading via setting
 //Other customizations: addition or combine mode,game saving and loading, undo,
 //May have  to remake tiles  and animations before gamemodes, scoreincrease
 //modes: splitscreen multiplayer, flappy, tertirs, 3d maybe,
@@ -22,7 +22,7 @@ if (!window.location.href.includes("index.html")) {
 
 function loaded() {
     function debug(text, bugfixingid) {
-		//console.log(text);
+        //console.log(text);
     }
 
     function getUrlVar(varible) {
@@ -49,6 +49,8 @@ function loaded() {
     const hbestDisplay = document.querySelector('#hbest');
     //end
     const scoreResult = document.querySelector('#result');
+    //back
+    let backdata = [];
     /////////////SETTINGS/////////////////
     //GOAL
     const goalDisplay = document.querySelector('#goal');
@@ -112,9 +114,9 @@ function loaded() {
 
     //AUTOPLAY
     const autoplayCheck = document.querySelector('#auto');
-	//Moves
-	const movesdisplay = document.querySelector('#moves');
-	const movescapdisplay = document.querySelector('#movecap');
+    //Moves
+    const movesdisplay = document.querySelector('#moves');
+    const movescapdisplay = document.querySelector('#movecap');
     const moveincrease = document.querySelector('#moveincrease');
     const movedecrease = document.querySelector('#movedecrease');
     var movecap = 0;
@@ -123,7 +125,7 @@ function loaded() {
 
         movecap = parseInt(movecapcookie);
     }
-	let moves = 0;
+    let moves = 0;
 
     //REVERSED
     const realtimeCheck = document.querySelector('#realtime');
@@ -168,7 +170,7 @@ function loaded() {
         [def_4096]
     ];
     ////Example game theme data: Empty Board Background Body Score colours tagline
-    def_gametheme = [def_0, "#cacece", "#72b182ab", "#776e65"];
+    def_gametheme = [def_0, "#cacece", "#72b182ab", "#fffff", "#808080", "WildCard"];
     def_theme = new Theme(def_0, def_2, def_4, def_8, def_16, def_32, def_64, def_128, def_256, def_512, def_1024, def_2048, der_morethen2048, def_morele, def_gametheme);
     //////////////////////////////////THEME GENARATOR//////////////////
     var customThemeActive = false;
@@ -619,13 +621,13 @@ function loaded() {
 
                 loadtilefromsave(true);
                 makeintotile(false);
-				
+
                 tilenum = tilenum + tilenum;
             }
             loadtilefromsave(true);
             makeintotile(false);
             for (let y = 0; y < jsonedTheme.elementMore[0].length; y++) {
-				
+
                 tilenum = tilenum * 2;
                 loadtilefromsave();
                 makeintotile(false);
@@ -766,7 +768,7 @@ function loaded() {
     const sharethemebutton = document.querySelector('#sharethemebutton');
     const loadthemebutton = document.querySelector('#loadthemebutton');
     const presetthemebutton = document.querySelector('#presetthemebutton');
-	
+
     const sharetext = document.querySelector('#sharetext');
     const presets = document.querySelector('#presetlist');
     const sharethemediv = document.querySelector('.sharethemediv');
@@ -797,12 +799,12 @@ function loaded() {
             debug("Unparsed cokie", 1)
             debug(storedtheme, 1)
             jsonedTheme = JSON.parse(storedtheme);
-			   presets.style.display = "none";
+            presets.style.display = "none";
             debug("Parsed JSON", 1);
             debug(jsonedTheme, 1);
             var encoded = btoa(JSON.stringify(jsonedTheme));
             sharethemeinputbox.value = encoded;
-			  sharethemeinputbox.style.display = "block";
+            sharethemeinputbox.style.display = "block";
             sharetext.innerHTML = "Copy this text and share it with whoever. (Click inside and press ctrl-a then copy) or share this link <a href='" + website[0] + ".html?rawTheme=" + encoded + "'>Link to Theme</a>";
         } else {
             sharetext.innerHTML = "Please note you need a theme to use this tool."
@@ -813,24 +815,25 @@ function loaded() {
         sharethemediv.style.display = "none";
     }
 
-	function presettheme(){
-  		debug("funct_loadtheme", 2);
+    function presettheme() {
+        debug("funct_loadtheme", 2);
         makeintotile();
         sharethemediv.style.display = "block";
         loadbutton.style.display = "none";
         sharethemeinputbox.style.display = "none";
-		
+
         presets.style.display = "block";
         sharetitle.innerHTML = "Preset Themes";
         sharetext.innerHTML = "Share your theme with me for the chance of it beign added here";
-	}
+    }
+
     function loadtheme() {
         debug("funct_loadtheme", 2);
         makeintotile();
         sharethemediv.style.display = "block";
-		 sharethemeinputbox.style.display = "block";
+        sharethemeinputbox.style.display = "block";
         loadbutton.style.display = "block";
-		presets.style.display = "none";
+        presets.style.display = "none";
         sharetitle.innerHTML = "Load Theme";
         sharetext.innerHTML = "Paste your text and press the buton below";
 
@@ -1009,15 +1012,19 @@ function loaded() {
 
             document.body.style.background = gameTheme[2];
             document.body.style.color = gameTheme[3];
-            textclasses = document.querySelectorAll("p");
+            textclasses = document.querySelectorAll("p, .scoretab, .side-item");
             for (let y = 0; y < textclasses.length; y++) {
                 textclasses[y].style.color = gameTheme[3];
+            }
+            sidecols = document.querySelectorAll(" .side-item");
+            for (let y = 0; y < sidecols.length; y++) {
+                sidecols[y].style.borderColor = gameTheme[1];
             }
             gridDisplay.style.border = "5px solid " + gameTheme[1];
             gridDisplay.style.backgroundColor = zerocol;
             tilestotheme = gridDisplay.children;
             document.querySelector("#tagline").innerHTML = gameTheme[5];
-            scoresclass = document.querySelectorAll(".scoretab");
+            scoresclass = document.querySelectorAll(".scoretab, .side-item");
             for (let y = 0; y < scoresclass.length; y++) {
                 scoresclass[y].style.backgroundColor = gameTheme[4];
             }
@@ -1052,7 +1059,7 @@ function loaded() {
         spawnDisplay.innerHTML = "<p>" + spwantile + "</p>";
         setCookie("spawn", spwantile, 1);
         if (mode != 0) {
-            window.location.reload();
+            resetGame();
         }
     }
     spawnincrease.addEventListener("click", function() {
@@ -1119,8 +1126,8 @@ function loaded() {
             size = width + 2;
         }
         setCookie("width", size, 1);
-				setCookie("savegame","",31)
-        location.reload();
+        resetGame();
+
     }
     sizeincrease.addEventListener("click", function() {
         setsize(2);
@@ -1129,7 +1136,8 @@ function loaded() {
         setsize(1);
     });
     sizeDisplay.innerHTML = "<p>" + width + "</p>";
- 	function setmovecap(mode) {
+
+    function setmovecap(mode) {
         ////console.log("Clicked");
         if (mode == 1) {
             if (movecap != 0)
@@ -1138,10 +1146,10 @@ function loaded() {
                 movecap = 0;
         }
         if (mode == 2) {
-             movecap += 100;
+            movecap += 100;
         }
         setCookie("movecap", movecap, 1);
-		 movescapdisplay.innerHTML = "<p>" + movecap + "</p>";
+        movescapdisplay.innerHTML = "<p>" + movecap + "</p>";
     }
     moveincrease.addEventListener("click", function() {
         setmovecap(2);
@@ -1150,6 +1158,9 @@ function loaded() {
         setmovecap(1);
     });
     movescapdisplay.innerHTML = "<p>" + movecap + "</p>";
+
+
+
     function setreverse() {
 
         setCookie("reverse", reverseCheck.checked, 1);
@@ -1159,7 +1170,7 @@ function loaded() {
             setCookie("goal", 2048, 1);
             setCookie("spawn", 2, 1);
         }
-        location.reload();
+        resetGame();
     }
     if (reverse) {
         reverseCheck.checked = true
@@ -1388,7 +1399,7 @@ function loaded() {
                 scoreResult.style.width = (width * 100) + "px";
                 scoreResult.style.height = width * 100 + "px";
                 scoreResult.style.background = "lightgreen";
-                scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Win!</h1><button onclick='location.reload()'>Replay</button><button id='cont'>Continue</button>"
+                scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Win!</h1><button onclick='resetGame()'>Replay</button><button id='cont'>Continue</button>"
                 document.getElementById("cont").addEventListener("click", continueGame);
                 autoplayCheck.checked = false;
                 autoplayCheck.removeEventListener("change", autoplay);
@@ -1425,7 +1436,7 @@ function loaded() {
                 scoreResult.style.display = "block";
                 scoreResult.style.width = width * 100 + "px";
                 scoreResult.style.height = width * 100 + "px";
-                scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button onclick='location.reload()'>Replay</button>";
+                scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button onclick='resetGame()'>Replay</button>";
                 autoplayCheck.enabled = false;
                 autoplayCheck.removeEventListener("change", autoplay);
                 document.removeEventListener('keyup', control);
@@ -1433,16 +1444,16 @@ function loaded() {
 
 
         }
-		if(moves != 0)
-			if(moves ==  movecap){
-				scoreResult.style.display = "block";
+        if (moves != 0)
+            if (moves == movecap) {
+                scoreResult.style.display = "block";
                 scoreResult.style.width = width * 100 + "px";
                 scoreResult.style.height = width * 100 + "px";
-                scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button onclick='location.reload()'>Replay</button>";
+                scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button onclick='resetGame()'>Replay</button>";
                 autoplayCheck.enabled = false;
                 autoplayCheck.removeEventListener("change", autoplay);
                 document.removeEventListener('keyup', control);
-			}
+            }
 
 
     }
@@ -1483,6 +1494,8 @@ function loaded() {
 
 
     }
+
+
 
     function checkbest() {
         let current = parseInt(bestDisplay.innerHTML);
@@ -1528,32 +1541,43 @@ function loaded() {
         } else {
             themeBoard(def_theme);
         }
-		moves  += 1;
-		movesdisplay.innerHTML = moves;
-		savegame();
+        moves += 1;
+        movesdisplay.innerHTML = moves;
+        savegame();
     }
 
-	function savegame(){
-		let scoredata = [];
-		for (let x = 0; x < squares.length; x++) {
-			scoredata.push(squares[x].innerHTML);
-			
-		}
-		setCookie("savegame",scoredata,31)
-	}
-	function loadgame(){
-		let scoredata = getCookie("savegame").split(",");
-		if(scoredata != "")
-			for (let x = 0; x < squares.length; x++) {
-				squares[x].innerHTML = scoredata[x];
-			}
-  if (customThemeActive) {
+    function savegame() {
+        let scoredata = [];
+        for (let x = 0; x < squares.length; x++) {
+            scoredata.push(squares[x].innerHTML);
+        }
+        scoredata.push(moves);
+        backdata.push(scoredata);
+        setCookie("savegame", scoredata, 31)
+    }
+
+    document.getElementById("goback").addEventListener("click", function() {
+        //  loadgame(backdata[backdata.length - 2]);
+    });
+
+    function loadgame(scoredata) {
+
+        if (scoredata != "")
+            console.log(scoredata)
+        for (let x = 0; x < squares.length; x++) {
+            squares[x].innerHTML = scoredata[x];
+            moves = parseInt(scoredata[scoredata.length - 1])
+            movesdisplay.innerHTML = moves;
+        }
+
+        if (customThemeActive) {
             themeBoard(cus_theme);
         } else {
             themeBoard(def_theme);
         }
-	}
-	loadgame()
+    }
+    loadgame(getCookie("savegame").split(","))
+
     function keyup() {
         moveUp();
         combineCol("up");
@@ -1602,8 +1626,8 @@ function loaded() {
                 } else {
                     themeBoard(def_theme);
                 }
-				moves  += 1;
-		movesdisplay.innerHTML = moves;
+                moves += 1;
+                movesdisplay.innerHTML = moves;
                 autoplay();
             }, 100);
         } else {
@@ -1654,5 +1678,10 @@ function closeNav() {
 
 function resetTheme() {
     setCookie("customTheme", "", 365);
+    location.reload();
+}
+
+function resetGame() {
+    setCookie("savegame", "", 31);
     location.reload();
 }
