@@ -7,6 +7,7 @@ if (!window.location.href.includes("index.html")) {
 
 //NEXT:
 //Savin and loading via setting
+//Cookie-ify backbutton
 //Other customizations: addition or combine mode,game saving and loading, undo,
 //May have  to remake tiles  and animations before gamemodes, scoreincrease
 //modes: splitscreen multiplayer, flappy, tertirs, 3d maybe,
@@ -1553,28 +1554,36 @@ function loaded() {
         }
         scoredata.push(moves);
         backdata.push(scoredata);
+        if (backdata.length >= 3) {
+            backdata.shift();
+        }
+        console.log(backdata)
         setCookie("savegame", scoredata, 31)
     }
 
     document.getElementById("goback").addEventListener("click", function() {
-        //  loadgame(backdata[backdata.length - 2]);
+        loadgame(backdata[backdata.length - 2]);
     });
 
     function loadgame(scoredata) {
 
-        if (scoredata != "")
+        if (scoredata != "") {
             console.log(scoredata)
-        for (let x = 0; x < squares.length; x++) {
-            squares[x].innerHTML = scoredata[x];
-            moves = parseInt(scoredata[scoredata.length - 1])
-            movesdisplay.innerHTML = moves;
+            for (let x = 0; x < squares.length; x++) {
+                squares[x].innerHTML = scoredata[x];
+                moves = parseInt(scoredata[scoredata.length - 1])
+                movesdisplay.innerHTML = moves;
+            }
         }
+
+
 
         if (customThemeActive) {
             themeBoard(cus_theme);
         } else {
             themeBoard(def_theme);
         }
+        savegame();
     }
     loadgame(getCookie("savegame").split(","))
 
