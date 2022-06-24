@@ -256,10 +256,9 @@ h2 {
     --anim-move: -100px;
 }
 
-#scoreadd{
-	position: relative;
-	
-	 left: 65%;
+.class_scoreadd{
+	position: relative;	
+	left: 65%;
 	opacity: 0;
 }
 

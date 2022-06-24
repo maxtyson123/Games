@@ -10,10 +10,6 @@ closeNav="";
 //NEXT:
 
 //SplitScreen multiplayer
-
-//--Fix socre add anim
-//--Reset Game
-//--Replace all game1 with dynamic loading
 //----Fix animation w binding
 //----Multiboard looping setup
 //---- INPUT
@@ -79,6 +75,7 @@ var Game =  {
 									//Spawn w add
 									addScoreSpan = document.createElement('span');
 									addScoreSpan.id = 'scoreadd-'+selector
+                           addScoreSpan.className = "class_scoreadd";
 								scoretabdiv1.appendChild(scoretitlediv);
 								scoretabdiv1.appendChild(scoreSpan);
 								scoretabdiv1.appendChild(addScoreSpan);
@@ -195,13 +192,14 @@ var Game =  {
 				paddingdiv.appendChild(tile_containerdiv);
 			gamespace.appendChild(paddingdiv);
 			document.getElementById('goback-'+selector).addEventListener('click', this.goback.bind(this), false);  ///BINDING
-			document.getElementById('reset-'+selector).addEventListener('click', this.reset.bind(this), false);  ///BINDING
+			document.getElementById('reset-'+selector).addEventListener('click', this.reset2.bind(this), false);  ///BINDING
 			this.movesdisplay = document.querySelector('#moves-'+selector);
 			this.scoreDisplay = document.querySelector('#score-'+selector);
 			this.hscoreDisplay = document.querySelector('#hscore-'+selector);
 			this.scoreAddDisplay = document.querySelector('#scoreadd-'+selector);
 			this.bestDisplay = document.querySelector('#best-'+selector);
 			this.hbestDisplay = document.querySelector('#hbest-'+selector);
+         this.scoreResult = document.querySelector('#result-'+selector);
 			
 
 		 },
@@ -209,16 +207,14 @@ var Game =  {
 			 	loadgame(this.backdata[this.backdata.length - 2], this);
 		 },
 		 reset : function(){
-			 resetGame(this,2);
-		 },
-		 scoreResult : "",
-		 getScoreResult: function(){
-			 this.scoreResult  = document.getElementById("result-"+this.gameId);
-			 },
-		 
+			 resetGame(this,1);
+		 }, 
+       reset2 : function(){
+         resetGame(this,2);
+      },
+	 
 		 getgridDisplay: function(){
 			 this.gridDisplay  = document.getElementById(this.gridDisplayId);
-			 this.getScoreResult();
 			 },
 		 squares : [],
 		 moves : 0,
@@ -350,7 +346,8 @@ var Game =  {
         spawnDisplay.innerHTML = "<p>" + settingsData.spwantile + "</p>";
         setCookie("settingsData", JSON.stringify(settingsData), 1);
         if (mode != 0) {
-            resetGame(game1,1);
+    
+                 resetGame(game1,1); //INSET LOOP //INSET LOOP
         }
     }
     spawnincrease.addEventListener("click", function() {
@@ -420,7 +417,7 @@ var Game =  {
         }
 		settingsData.width = size;
         setCookie("settingsData", JSON.stringify(settingsData), 1);
-        resetGame(game1,1);
+             resetGame(game1,1); //INSET LOOP
 
     }
     sizeincrease.addEventListener("click", function() {
@@ -468,7 +465,7 @@ var Game =  {
 			settingsData.spwantile = 2;
         }
 		setCookie("settingsData", JSON.stringify(settingsData), 1);
-        resetGame(game1,1);
+             resetGame(game1,1); //INSET LOOP
     }
     if (reverse) {
         reverseCheck.checked = true
@@ -736,7 +733,7 @@ closeNav =	function closeNavFunct() {
         urldata = urlinput.value;
         if (realtime) {
             makeintotile();
-			game1.themeBoard(cus_theme);
+			game1.themeBoard(cus_theme); //INSET LOOP
         }
     }
 
@@ -751,7 +748,7 @@ closeNav =	function closeNavFunct() {
         textcol = textcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     });
     //BackgroundCol
@@ -764,7 +761,7 @@ game1.themeBoard(cus_theme);
         bgcol = bgcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     });
     //GlowAmount
@@ -779,7 +776,7 @@ game1.themeBoard(cus_theme);
         themeglowAmtlDisplay.innerHTML = "<p>" + glowAmtnum + "px</p>";
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     }
 
@@ -792,7 +789,7 @@ game1.themeBoard(cus_theme);
         themeglowAmtlDisplay.innerHTML = "<p>" + glowAmtnum + "px</p>";
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     }
     //GlowCol
@@ -805,7 +802,7 @@ game1.themeBoard(cus_theme);
         glowCol = glowcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     });
 
@@ -819,7 +816,7 @@ game1.themeBoard(cus_theme);
         zerocol = zerocolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     });
     var boardcolpciker = new iro.ColorPicker('#boardpicker', {
@@ -831,7 +828,7 @@ game1.themeBoard(cus_theme);
         boardcol = boardcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     });
     var bodybgcolpciker = new iro.ColorPicker('#worldbgpicker', {
@@ -843,7 +840,7 @@ game1.themeBoard(cus_theme);
         bodybgcol = bodybgcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     });
     var bodytextcolpciker = new iro.ColorPicker('#worldtextpicker', {
@@ -855,7 +852,7 @@ game1.themeBoard(cus_theme);
         bodytextcol = bodytextcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     });
     var scorecolpciker = new iro.ColorPicker('#worldscore', {
@@ -867,7 +864,7 @@ game1.themeBoard(cus_theme);
         scorecol = scorecolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
         }
     });
     const taginput = document.querySelector('#taginput');
@@ -888,7 +885,7 @@ game1.themeBoard(cus_theme);
     submitbutton.addEventListener("click", function() {
         if (!realtime) {
             makeintotile();
-game1.themeBoard(cus_theme);
+game1.themeBoard(cus_theme); //INSET LOOP
             applytheme();
         } else {
             applytheme();
@@ -1396,9 +1393,9 @@ game1.themeBoard(cus_theme);
             for (let y = 0; y < sidecols.length; y++) {
                 sidecols[y].style.borderColor = gameTheme[1];
             }
-            game1.gridDisplay.style.border = "5px solid " + gameTheme[1];
-            game1.gridDisplay.style.backgroundColor = zerocol;
-            tilestotheme = game1.gridDisplay.children;
+            this.gridDisplay.style.border = "5px solid " + gameTheme[1];
+            this.gridDisplay.style.backgroundColor = zerocol;
+            tilestotheme = this.gridDisplay.children;
             document.querySelector("#tagline").innerHTML = gameTheme[5];
             scoresclass = document.querySelectorAll(".scoretab, .side-item");
             for (let y = 0; y < scoresclass.length; y++) {
@@ -1558,9 +1555,9 @@ game1.themeBoard(cus_theme);
                 if (mode != "nocheck") {
                     if (combinedTotal != 0) {
                         this.scoreAddDisplay.innerHTML = "+" + combinedTotal;
-                        this.scoreAddDisplay.className = "scoreanimate";
+                        this.scoreAddDisplay.className = "class_scoreadd scoreanimate";
                         setTimeout(function() {
-                            this.scoreAddDisplay.className = "";
+                            this.scoreAddDisplay.className = "class_scoreadd";
                         }.bind(this), 1000);
 
                     }
@@ -1612,9 +1609,9 @@ game1.themeBoard(cus_theme);
                 if (mode != "nocheck") {
                     if (combinedTotal != 0) {
                         this.scoreAddDisplay.innerHTML = "+" + combinedTotal;
-                        this.scoreAddDisplay.className = "scoreanimate";
+                        this.scoreAddDisplay.className = "class_scoreadd scoreanimate";
                         setTimeout(function() {
-                            this.scoreAddDisplay.className = "";
+                            this.scoreAddDisplay.className = "class_scoreadd";
                         }.bind(this), 1000);
 
                     }
@@ -1677,7 +1674,8 @@ game1.themeBoard(cus_theme);
                 this.scoreResult.style.display = "block";
                 this.scoreResult.style.width = width * 100 + "px";
                 this.scoreResult.style.height = width * 100 + "px";
-                this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button onclick='resetGame()'>Replay</button>";
+                this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button id='replay-"+this.gameId+"'>Replay</button>";
+                document.getElementById('replay-'+this.gameId).addEventListener('click', this.reset.bind(this), false);  ///BINDING
                 autoplayCheck.checked = false;
                 autoplayCheck.removeEventListener("change", autoplay);
                 document.removeEventListener('keyup', control);
@@ -1686,11 +1684,12 @@ game1.themeBoard(cus_theme);
 
         }
         if (movecap != 0)
-            if (game1.moves >= movecap) {
+            if (this.moves >= movecap) {
                 this.scoreResult.style.display = "block";
                 this.scoreResult.style.width = width * 100 + "px";
                 this.scoreResult.style.height = width * 100 + "px";
-                this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button onclick='resetGame()'>Replay</button>";
+                this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><<button id='replay-"+this.gameId+"'>Replay</button>";
+                document.getElementById('replay-'+this.gameId).addEventListener('click', this.reset.bind(this), false);  ///BINDING
                 autoplayCheck.checked = false;
                 autoplayCheck.removeEventListener("change", autoplay);
                 document.removeEventListener('keyup', control);
@@ -1699,9 +1698,9 @@ game1.themeBoard(cus_theme);
 
     }
 
-    continueGameFunct = function continueGame() {
-        game1.scoreResult.style.display = "none";
-        game1.continueEnabled = true;
+    continueGameFunct = function continueGame(game) {
+         game.scoreResult.style.display = "none";
+         game.continueEnabled = true;
         autoplayCheck.addEventListener("change", autoplay);
         document.addEventListener('keyup', control);
     }
@@ -1713,8 +1712,11 @@ game1.themeBoard(cus_theme);
                 this.scoreResult.style.width = (width * 100) + "px";
                 this.scoreResult.style.height = width * 100 + "px";
                 this.scoreResult.style.background = "lightgreen";
-                this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Win!</h1><button onclick='resetGame()'>Replay</button><button id='cont'>Continue</button>"
-                document.getElementById("cont").addEventListener("click", this.continueGame);
+                this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Win!</h1>   <button id='replay-"+this.gameId+"'>Replay</button><button id='cont'>Continue</button>"
+                document.getElementById('replay-'+this.gameId).addEventListener('click', this.reset.bind(this), false);  ///BINDING
+                document.getElementById("cont").addEventListener("click", function(){
+                  this.continueGame(this);
+                }.bind(this));
                 autoplayCheck.checked = false;
                 autoplayCheck.removeEventListener("change", autoplay);
                 document.removeEventListener('keyup', control);
@@ -1808,8 +1810,10 @@ game1.themeBoard(cus_theme);
 				scoredata = loadedGame.boards[x].data;
 				scoredata.length = 0;
 				for (let x = 0; x < game.squares.length; x++) {
+                            
 					scoredata.push(game.squares[x].innerHTML);
 				}
+ 
 				scoredata.push(game.moves);
 				scoredata.push(game.score);
 				loadedGame.boards[x].hscore = game.hscore;
@@ -1843,13 +1847,24 @@ game1.themeBoard(cus_theme);
     function loadgame(gamedata,game) {
 
         if (gamedata != "") {
+        
 			scoredata = gamedata.data;
 			game.btile = gamedata.btile;
 			game.hscore = gamedata.hscore;
-            for (let x = 0; x < game.squares.length; x++) {
-                game.squares[x].innerHTML = scoredata[x];
+         undefinedinc = false;
+         for (let x = 0; x < scoredata.length; x++) {
             
+            if(scoredata[x] == "undefined"){
+               console.log(scoredata[x] +" : "+x)
+               undefinedinc = true}
             }
+    
+         if(!undefinedinc){
+            for (let x = 0; x < game.squares.length; x++) {
+               game.squares[x].innerHTML = scoredata[x];            
+             }
+         }
+   
 			    game.moves = parseInt(scoredata[scoredata.length - 2])
                 game.score = parseInt(scoredata[scoredata.length - 1])
                 game.movesdisplay.innerHTML = game.moves;
@@ -1857,6 +1872,7 @@ game1.themeBoard(cus_theme);
                 game.hbestDisplay.innerHTML = game.btile;
                 game.hscoreDisplay.innerHTML = game.hscore;
 			game.checkGameOver();
+      
         }
 
 
@@ -1867,6 +1883,7 @@ game1.themeBoard(cus_theme);
             game.themeBoard(def_theme);
         }
         savegame(game);
+      
     }
 	function intialLoad(game){
 		loadedGame = {};
@@ -1875,10 +1892,12 @@ game1.themeBoard(cus_theme);
 			loadedGame = JSON.parse(cookiedGame);
 					for (let x = 0; x < loadedGame.boards.length; x++) {
             if(loadedGame.boards[x].id = game.gameId){
+              
 				if (savemode)
        			 loadgame(loadedGame.boards[x], game)
 			}
 		} 
+      
 		}
 
 	}
@@ -1893,28 +1912,32 @@ game1.themeBoard(cus_theme);
 				}
 			} 
 		}
+      game.squares.length = 0;
+		game.moves=0;
+		game.score=0;
+		game.bestDisplay.innerHTML = "2";
+		game.movesdisplay.innerHTML = game.moves;
+      game.scoreDisplay.innerHTML = game.score;
+		game.gridDisplay.innerHTML="";
 		if(mode == 1){
-			location.reload();
-		}else{
-			game.squares.length = 0;
-			game.moves=0;
-			game.score=0;
-			game.bestDisplay.innerHTML = "2";
-			game.movesdisplay.innerHTML = game.moves;
-            game.scoreDisplay.innerHTML = game.score;
-			game.gridDisplay.innerHTML="";
-			game.createBoard();	
-			game.generate();
-			game.generate();
-			if (customThemeActive) {
-			game.themeBoard(cus_theme); 
-			} else {
-				game.themeBoard(def_theme);
-			}
-			savegame(game);
 
-		}
-		
+         savegame(game);
+			location.reload();
+         setCookie("reloadRequest","yes",1)
+         
+		}else{
+         game.createBoard();	
+         game.generate();
+         game.generate();
+         if (customThemeActive) {
+         game.themeBoard(cus_theme); 
+         } else {
+            game.themeBoard(def_theme);
+         }
+         savegame(game);
+      }
+    
+
 	}
 
     /////////////////////////INPUT/////////////////
@@ -2004,6 +2027,15 @@ game1.themeBoard(cus_theme);
 	//--------------------------------------------------------------------------------------------------------------------//
     //_________________________________________________Game-Setup_________________________________________________________//
     //--------------------------------------------------------------------------------------------------------------------//
+    //Load Theme
+      
+	//ThemeLoading
+	setTHeming()
+	loadallfromsave();
+    tilenum = 2;
+    loadtilefromsave();
+    makeintotile();
+	tilenum = 2;
 	//SetupFuncts
 	game1.moveLeft = moveLeftFunct;
 	game1.moveRight = moveRightFunct;
@@ -2022,27 +2054,24 @@ game1.themeBoard(cus_theme);
 	//Settings
 	setSettings();
 	//Game
+   
 	game1.createBoard();
-    game1.generate();
-    game1.generate();
-	intialLoad(game1)
+   game1.generate();
+   game1.generate();
+	intialLoad(game1);
 	game1.checkbest();
-    game1.checkhigh();
-
-	//ThemeLoading
-	setTHeming()
-	loadallfromsave();
-    tilenum = 2;
-    loadtilefromsave();
-    makeintotile();
-	tilenum = 2;
+   game1.checkhigh();
 	//Theme it
 	if (customThemeActive) {
         game1.themeBoard(cus_theme);
     } else {
         game1.themeBoard(def_theme);
     }
-  	
+  	 if(getCookie("reloadRequest") == "yes"){
+         setCookie("reloadRequest","no",1)
+         location.reload();
+         //STFU ik its a hack
+    }
 
     ////////////////////////////////////////////////////////OTHER////////////////////////////////////////////////////////////
     //--------------------------------------------------------------------------------------------------------------------//
