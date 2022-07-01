@@ -10,10 +10,14 @@ closeNav="";
 //NEXT:
 
 //SplitScreen multiplayer
-//----Fix animation w binding
-//----Multiboard looping setup
+//-----Cross board genaratinf
+//-----Un Center Final
+//---Foix back
+//FOx spawm tile
+//-----Board Creation
 //---- INPUT
 //-- Settings Mirroring as option
+//Can combine thru walls
 //Zoom
 //Preformace
 //Co-Op Multiplayer
@@ -36,7 +40,7 @@ function loaded() {
     
     //MUST BE HERE
 
-var Game =  {
+var GameClass =  {
 		 gridDisplay : "",
 		 gridDisplayId: "",
 		 movesdisplay:"",
@@ -199,8 +203,8 @@ var Game =  {
 			this.scoreAddDisplay = document.querySelector('#scoreadd-'+selector);
 			this.bestDisplay = document.querySelector('#best-'+selector);
 			this.hbestDisplay = document.querySelector('#hbest-'+selector);
-         this.scoreResult = document.querySelector('#result-'+selector);
-			
+            this.scoreResult = document.querySelector('#result-'+selector);
+            this.gridDisplay  = document.getElementById(this.gridDisplayId);
 
 		 },
 		 goback : function(){
@@ -212,10 +216,6 @@ var Game =  {
        reset2 : function(){
          resetGame(this,2);
       },
-	 
-		 getgridDisplay: function(){
-			 this.gridDisplay  = document.getElementById(this.gridDisplayId);
-			 },
 		 squares : [],
 		 moves : 0,
 
@@ -252,10 +252,10 @@ var Game =  {
         this.checkGameOver()
      }
 	}
+    games = [];
+    
 
-	game1 = Object.assign({}, Game);
-	game1.createboardhtml("1");
-	game1.getgridDisplay();
+    //for (let g = 0; g < games.length; g++) {
 
     const headertext = document.querySelector('.goaltext');
     const headertext2 = document.querySelector('.goaltext2');
@@ -333,7 +333,7 @@ var Game =  {
     //--------------------------------------------------------------------------------------------------------------------//
     //SPAWN
     function setspawn(mode) {
-        //////console.log("Clicked");
+
         if (mode == 1) {
             if (spwantile != 1)
                 settingsData.spwantile -= 1;
@@ -346,8 +346,10 @@ var Game =  {
         spawnDisplay.innerHTML = "<p>" + settingsData.spwantile + "</p>";
         setCookie("settingsData", JSON.stringify(settingsData), 1);
         if (mode != 0) {
-    
-                 resetGame(game1,1); //INSET LOOP //INSET LOOP
+            for (let g = 0; g < games.length; g++) {
+                 resetGame(games[g],1);
+            }
+            ReloadPage();
         }
     }
     spawnincrease.addEventListener("click", function() {
@@ -359,7 +361,6 @@ var Game =  {
     
     //GOAL
     function setgoal(mode) {
-        //////console.log("Clicked");
 
         let stepscookie = getCookie("steps");
         if (stepscookie == "") {
@@ -405,7 +406,7 @@ var Game =  {
 
 
     function setsize(mode) {
-        //////console.log("Clicked");
+    
         if (mode == 1) {
             if (width != 2)
                 size = width - 2;
@@ -417,7 +418,10 @@ var Game =  {
         }
 		settingsData.width = size;
         setCookie("settingsData", JSON.stringify(settingsData), 1);
-             resetGame(game1,1); //INSET LOOP
+        for (let g = 0; g < games.length; g++) {
+            resetGame(games[g],1);
+       }
+       ReloadPage();
 
     }
     sizeincrease.addEventListener("click", function() {
@@ -429,7 +433,7 @@ var Game =  {
 
 
     function setmovecap(mode) {
-        //////console.log("Clicked");
+    
         if (mode == 1) {
             if (movecap != 0)
                 movecap -= 100;
@@ -465,14 +469,17 @@ var Game =  {
 			settingsData.spwantile = 2;
         }
 		setCookie("settingsData", JSON.stringify(settingsData), 1);
-             resetGame(game1,1); //INSET LOOP
+        for (let g = 0; g < games.length; g++) {
+            resetGame(games[g],1);
+       }
+       ReloadPage();
     }
     if (reverse) {
         reverseCheck.checked = true
     } else if (!reverse) {
         reverseCheck.checked = false
     }
-    //	////console.log(reverseCheck.checked +"="+reverse);
+    
 	
 
     function setsave() {
@@ -487,7 +494,7 @@ var Game =  {
     } else if (!savemode) {
         savemodeCheck.checked = false
     }
-    //	////console.log(reverseCheck.checked +"="+reverse);
+
 
 	
 	openNav = function openNavFunct() {
@@ -733,7 +740,9 @@ closeNav =	function closeNavFunct() {
         urldata = urlinput.value;
         if (realtime) {
             makeintotile();
-			game1.themeBoard(cus_theme); //INSET LOOP
+            for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     }
 
@@ -748,7 +757,9 @@ closeNav =	function closeNavFunct() {
         textcol = textcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     });
     //BackgroundCol
@@ -761,7 +772,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
         bgcol = bgcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     });
     //GlowAmount
@@ -776,7 +789,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
         themeglowAmtlDisplay.innerHTML = "<p>" + glowAmtnum + "px</p>";
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     }
 
@@ -789,7 +804,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
         themeglowAmtlDisplay.innerHTML = "<p>" + glowAmtnum + "px</p>";
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     }
     //GlowCol
@@ -802,7 +819,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
         glowCol = glowcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     });
 
@@ -816,7 +835,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
         zerocol = zerocolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     });
     var boardcolpciker = new iro.ColorPicker('#boardpicker', {
@@ -828,7 +849,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
         boardcol = boardcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     });
     var bodybgcolpciker = new iro.ColorPicker('#worldbgpicker', {
@@ -840,7 +863,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
         bodybgcol = bodybgcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     });
     var bodytextcolpciker = new iro.ColorPicker('#worldtextpicker', {
@@ -852,7 +877,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
         bodytextcol = bodytextcolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     });
     var scorecolpciker = new iro.ColorPicker('#worldscore', {
@@ -864,14 +891,16 @@ game1.themeBoard(cus_theme); //INSET LOOP
         scorecol = scorecolpciker.color.hexString;
         if (realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
         }
     });
     const taginput = document.querySelector('#taginput');
 
     function settag() {
         tagline = taginput.value;
-        ////console.log(tagline)
+
         if (realtime)
             makeintotile()
     }
@@ -885,7 +914,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
     submitbutton.addEventListener("click", function() {
         if (!realtime) {
             makeintotile();
-game1.themeBoard(cus_theme); //INSET LOOP
+for (let g = 0; g < games.length; g++) {
+			games[g].themeBoard(cus_theme);
+            }
             applytheme();
         } else {
             applytheme();
@@ -970,7 +1001,7 @@ game1.themeBoard(cus_theme); //INSET LOOP
                             glowAmtnum = parseInt(glowData[3].replace('px', ''));
 
                         }
-                        ////console.log(jsonedTheme.options[y].textcol)
+                  
                         default_textcol = jsonedTheme.options[y].textcol;
                         default_bgcol = jsonedTheme.options[y].bg;
                         bgcolpciker.color.set(default_bgcol);
@@ -994,7 +1025,7 @@ game1.themeBoard(cus_theme); //INSET LOOP
                 }
             }
         }
-        ////console.log("LOADEE")
+    
     }
 
     function loadallfromsave() {
@@ -1009,7 +1040,7 @@ game1.themeBoard(cus_theme); //INSET LOOP
 
                 loadtilefromsave(true);
                 makeintotile(false);
-                //console.log(tilenum+": _loaded_ "+glowAmtnum);
+            
                 tilenum = tilenum + tilenum;
             }
             loadtilefromsave(true);
@@ -1124,7 +1155,7 @@ game1.themeBoard(cus_theme); //INSET LOOP
         function newBoardElemet() {
 
             element = "";
-            //console.log(tilenum+": _boaring_ "+glowAmtnum);
+            
             if (modename[currentmode] == "Image") {
 
                 element = new BoardElement(bgcol, textcol, "0 0 " + glowAmtnum + "px " + glowAmtnum + "px " + glowCol, true, urldata)
@@ -1456,8 +1487,8 @@ game1.themeBoard(cus_theme); //INSET LOOP
                         this.squares[x + y].parentNode.classList.add("animate-right");
 
                         this.squares[x + y].parentNode.addEventListener('animationend', function() {
-                            game1.squares[x + y].parentNode.classList.remove('animate-right');
-                        })
+                            this.squares[x + y].parentNode.classList.remove('animate-right');
+                        }.bind(this))
                     }
                 }
             }
@@ -1485,9 +1516,9 @@ game1.themeBoard(cus_theme); //INSET LOOP
                     if (newRow[0 + y] != 0 && oldval != newRow[0 + y]) {
                         this.squares[x + y].parentNode.classList.add("animate-left");
                         this.squares[x + y].parentNode.addEventListener('animationend', function() {
-                            game1.squares[x + y].parentNode.classList.remove('animate-left');
+                            this.squares[x + y].parentNode.classList.remove('animate-left');
 							
-                        })
+                        }.bind(this))
                     }
                 }
             }
@@ -1512,8 +1543,8 @@ game1.themeBoard(cus_theme); //INSET LOOP
                 if (newCol[0 + y] != 0 && oldval != newCol[0 + y]) {
                     this.squares[x + y * width].parentNode.classList.add("animate-down");
                     this.squares[x + y * width].parentNode.addEventListener('animationend', function() {
-                        game1.squares[x + y * width].parentNode.classList.remove('animate-down');
-                    })
+                        this.squares[x + y * width].parentNode.classList.remove('animate-down');
+                    }.bind(this))
                 }
 
             }
@@ -1537,8 +1568,8 @@ game1.themeBoard(cus_theme); //INSET LOOP
                 if (newCol[0 + y] != 0 && oldval != newCol[0 + y]) {
                     this.squares[x + y * width].parentNode.classList.add("animate-up");
                     this.squares[x + y * width].parentNode.addEventListener('animationend', function() {
-                        game1.squares[x + y * width].parentNode.classList.remove('animate-up');
-                    })
+                        this.squares[x + y * width].parentNode.classList.remove('animate-up');
+                    }.bind(this))
                 }
             }
         }
@@ -1572,12 +1603,12 @@ game1.themeBoard(cus_theme); //INSET LOOP
                     this.checkbest();
                 this.squares[x + 1].innerHTML = 0;
                 if (mode == "left") {
-                    //////console.log("Left: "+x)
+            
                     if (parseInt(this.squares[x].innerHTML) != 0) {
                         this.squares[x].parentNode.classList.add("animate-pop");
                         this.squares[x].parentNode.addEventListener('animationend', function() {
-                            game1.squares[x].parentNode.classList.remove('animate-pop');
-                        })
+                            this.squares[x].parentNode.classList.remove('animate-pop');
+                        }.bind(this))
                     }
                 } else {
 
@@ -1585,8 +1616,8 @@ game1.themeBoard(cus_theme); //INSET LOOP
 
                         this.squares[x + 1].parentNode.classList.add("animate-pop");
                         this.squares[x + 1].parentNode.addEventListener('animationend', function() {
-                            game1.squares[x + 1].parentNode.classList.remove('animate-pop');
-                        })
+                            this.squares[x + 1].parentNode.classList.remove('animate-pop');
+                        }.bind(this))
                     }
                 }
 
@@ -1625,15 +1656,15 @@ game1.themeBoard(cus_theme); //INSET LOOP
                     if (parseInt(this.squares[x].innerHTML) != 0) {
                         this.squares[x].parentNode.classList.add("animate-pop");
                         this.squares[x].parentNode.addEventListener('animationend', function() {
-                            game1.squares[x].parentNode.classList.remove('animate-pop');
-                        })
+                            this.squares[x].parentNode.classList.remove('animate-pop');
+                        }.bind(this))
                     }
                 } else {
                     if (parseInt(this.squares[x].innerHTML) != 0) {
                         this.squares[x + width].parentNode.classList.add("animate-pop");
                         this.squares[x + width].parentNode.addEventListener('animationend', function() {
-                            game1.squares[x + width].parentNode.classList.remove('animate-pop');
-                        })
+                            this.squares[x + width].parentNode.classList.remove('animate-pop');
+                        }.bind(this))
                     }
                 }
                 if (mode != "nocheck")
@@ -1806,7 +1837,8 @@ game1.themeBoard(cus_theme); //INSET LOOP
 		}
 		exists = false;
         for (let x = 0; x < loadedGame.boards.length; x++) {
-            if(loadedGame.boards[x].id = game.gameId){
+            if(parseInt(loadedGame.boards[x].id) == game.gameId){
+
 				scoredata = loadedGame.boards[x].data;
 				scoredata.length = 0;
 				for (let x = 0; x < game.squares.length; x++) {
@@ -1823,10 +1855,12 @@ game1.themeBoard(cus_theme); //INSET LOOP
 					game.backdata.shift();
 				}
 				exists = true;
+            
 			}
         }
 		if(!exists){
 				scoredata = [];
+         
 				for (let x = 0; x < game.squares.length; x++) {
 					scoredata.push(game.squares[x].innerHTML);
 				}
@@ -1855,7 +1889,6 @@ game1.themeBoard(cus_theme); //INSET LOOP
          for (let x = 0; x < scoredata.length; x++) {
             
             if(scoredata[x] == "undefined"){
-               console.log(scoredata[x] +" : "+x)
                undefinedinc = true}
             }
     
@@ -1891,7 +1924,7 @@ game1.themeBoard(cus_theme); //INSET LOOP
 		if(cookiedGame != ""){
 			loadedGame = JSON.parse(cookiedGame);
 					for (let x = 0; x < loadedGame.boards.length; x++) {
-            if(loadedGame.boards[x].id = game.gameId){
+            if(parseInt(loadedGame.boards[x].id) == game.gameId){
               
 				if (savemode)
        			 loadgame(loadedGame.boards[x], game)
@@ -1920,10 +1953,7 @@ game1.themeBoard(cus_theme); //INSET LOOP
       game.scoreDisplay.innerHTML = game.score;
 		game.gridDisplay.innerHTML="";
 		if(mode == 1){
-
-         savegame(game);
-			location.reload();
-         setCookie("reloadRequest","yes",1)
+	
          
 		}else{
          game.createBoard();	
@@ -1939,89 +1969,96 @@ game1.themeBoard(cus_theme); //INSET LOOP
     
 
 	}
-
+    function ReloadPage(){
+        location.reload();
+        setCookie("reloadRequest","yes",1)
+    }
     /////////////////////////INPUT/////////////////
     function control(e) {
+        for (let g = 0; g < games.length; g++) {
+
         if (e.keyCode === 39) {
-            keyRight();
+            games[g].keyRight();
         } else if (e.keyCode === 37) {
-            keyLeft();
+            games[g].keyLeft();
         } else if (e.keyCode === 38) {
-            keyup();
+            games[g].keyup();
         } else if (e.keyCode === 40) {
-            keydown();
+            games[g].keydown();
         }
         if (customThemeActive) {
-            game1.themeBoard(cus_theme); //FIX LATER
+            games[g].themeBoard(cus_theme); //FIX LATER
         } else {
-            game1.themeBoard(def_theme); //FIX LATER
+            games[g].themeBoard(def_theme); //FIX LATER
         }
-        game1.moves += 1;
-        game1.movesdisplay.innerHTML = game1.moves;
+        games[g].moves += 1;
+        games[g].movesdisplay.innerHTML = games[g].moves;
         if (savemode)
-            savegame(game1);
+            savegame(games[g]);
+    }
     }
     document.addEventListener('keyup', control);
 
     function autoplay() {
         if (autoplayCheck.checked) {
+            for (let g = 0; g < games.length; g++) {
             setTimeout(function() {
                 document.removeEventListener('keyup', control);
                 let min = Math.ceil(1);
                 let max = Math.floor(5);
                 let rand = Math.floor(Math.random() * (max - min) + min); //The 
                 if (rand == 1)
-                    keyLeft();
+                    games[g].keyLeft();
                 else if (rand == 2)
-                    keyRight();
+                games[g].keyRight();
                 else if (rand == 3)
-                    keyup();
+                games[g].keyup();
                 else if (rand == 4)
-                    keydown();
+                games[g].keydown();
                 if (customThemeActive) {
-            game1.themeBoard(cus_theme); //FIX LATER
+            games[g].themeBoard(cus_theme); //FIX LATER
         } else {
-            game1.themeBoard(def_theme); //FIX LATER
+            games[g].themeBoard(def_theme); //FIX LATER
         }
-                game1.moves += 1;
-                game1.movesdisplay.innerHTML = game1.moves;
+                games[g].moves += 1;
+                games[g].movesdisplay.innerHTML = games[g].moves;
 				       if (savemode)
-            savegame(game1);
+            savegame(games[g]);
                 autoplay();
 				
-            }, 100);
+            }, 100);}
         } else {
             document.addEventListener('keyup', control);
         }
 
     }
 
-    function keyup() {
-        game1.moveUp();
-        game1.combineCol("up");
-        game1.moveUp();
-        game1.generate();
+    keyUpfunct = function keyup() {
+        this.moveUp();
+        this.combineCol("up");
+        this.moveUp();
+        this.generate();
     }
 
-    function keydown() {
-        game1.moveDown();
-        game1.combineCol("down");
-        game1.moveDown();
-        game1.generate();
+    keyDonwFunct = function keydown() {
+        this.moveDown();
+        this.combineCol("down");
+        this.moveDown();
+        this.generate();
     }
 
-    function keyRight() {
-        game1.moveRight();
-        game1.combineRow("right");
-        game1.moveRight();
-        game1.generate();
+    keyRightFunct = function keyRight() {
+        this.moveRight();
+        this.combineRow("right");
+        this.moveRight();
+        this.generate();
     }
 
-    function keyLeft() {
-        game1.moveLeft();
-        game1.combineRow("left");
-        game1.moveLeft();
-        game1.generate();
+    keyLeftFunct = function keyLeft() {
+        this.moveLeft();
+        this.combineRow("left");
+        this.moveLeft();
+        this.generate();
     }
   
 	//--------------------------------------------------------------------------------------------------------------------//
@@ -2030,57 +2067,74 @@ game1.themeBoard(cus_theme); //INSET LOOP
     //Load Theme
       
 	//ThemeLoading
+    setSettings();
 	setTHeming()
 	loadallfromsave();
     tilenum = 2;
     loadtilefromsave();
     makeintotile();
 	tilenum = 2;
-	//SetupFuncts
-	game1.moveLeft = moveLeftFunct;
-	game1.moveRight = moveRightFunct;
-	game1.moveDown = moveDownFunct;
-	game1.moveUp = moveUpFunct;
-	game1.combineCol = combineColFunct;
-	game1.combineRow = combineRowFunct;
-	game1.checkGameOver = checkGameOverFunc;
-	game1.checkWin = checkWinFunct;
-	game1.continueGame = continueGameFunct;
-	game1.checkhigh =  checkhighFunct;
-	game1.checkh_best = checkh_bestFunct;
-	game1.checkbest = checkbestFunct;
-	game1.themeBoard  = themeBoardFunct;
-	//Run Functs
-	//Settings
-	setSettings();
-	//Game
+	function SetUpGame(game){   
+        game.moveLeft = moveLeftFunct;
+        game.moveRight = moveRightFunct;
+        game.moveDown = moveDownFunct;
+        game.moveUp = moveUpFunct;
+        game.combineCol = combineColFunct;
+        game.combineRow = combineRowFunct;
+        game.checkGameOver = checkGameOverFunc;
+        game.checkWin = checkWinFunct;
+        game.continueGame = continueGameFunct;
+        game.checkhigh =  checkhighFunct;
+        game.checkh_best = checkh_bestFunct;
+        game.checkbest = checkbestFunct;
+        game.themeBoard  = themeBoardFunct;
+        game.keyLeft = keyLeftFunct;
+        game.keydown = keyDonwFunct;
+        game.keyRight = keyRightFunct;
+        game.keyup = keyUpfunct;
+        //Run Functs
+        //Settings
+    
+        //Game
+        game.createBoard();
+        game.generate();
+        game.generate();
+        intialLoad(game);
+        game.checkbest();
+        game.checkhigh();
+        //Theme it
+        if (customThemeActive) {
+            game.themeBoard(cus_theme);
+        } else {
+            game.themeBoard(def_theme);
+        }
+        return game;
+    }
+    for (let g = 0; g < games.length; g++) {
+	    games[g] = SetUpGame(games[g]);
+    }
+    function CreateNewGameData(id){
+        tempgame = Object.assign({}, GameClass);
+        tempgame.createboardhtml(id);
+        games.push(tempgame)
+    }
+    makeNewGame = function makeNewGameFunct(id){
+        CreateNewGameData(id);       
+        SetUpGame(games[id]);
+    }
+    makeNewGame(games.length)
    
-	game1.createBoard();
-   game1.generate();
-   game1.generate();
-	intialLoad(game1);
-	game1.checkbest();
-   game1.checkhigh();
-	//Theme it
-	if (customThemeActive) {
-        game1.themeBoard(cus_theme);
-    } else {
-        game1.themeBoard(def_theme);
-    }
-  	 if(getCookie("reloadRequest") == "yes"){
-         setCookie("reloadRequest","no",1)
-         location.reload();
-         //STFU ik its a hack
-    }
-
     ////////////////////////////////////////////////////////OTHER////////////////////////////////////////////////////////////
     //--------------------------------------------------------------------------------------------------------------------//
     //_________________________________________________OTHER-FUNCTIONS____________________________________________________//
     //--------------------------------------------------------------------------------------------------------------------//
     function debug(text, bugfixingid) {
-        ////console.log(text);
     }
-
+    if(getCookie("reloadRequest") == "yes"){
+        setCookie("reloadRequest","no",1)
+        location.reload();
+        //STFU ik its a hack
+   }
     function getUrlVar(varible) {
         debug("funct_geturl", 2);
         vars = window.location.search.split("?");
