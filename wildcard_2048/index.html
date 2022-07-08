@@ -69,11 +69,33 @@
         <div class="newboarddiv">
            <h1 class="newboardtect">Press key for "left"</h1>
         </div>
+		   <div class="row">
+            <button class="openbtn" onclick="openReplay()">☰ Open Replay Controls</button>
+        <div>
+			<br>
         <div class="row">
             <button class="openbtn" onclick="openNav()">☰ Open Customization Options</button>
-            <div>
+        <div>
             </div>
+ 		 <div class="replaypannel" id="replaypannel">
+                <a href="javascript:void(0)" class="replay_close">×</a>
+				<h2>Replays</h2>
 
+				<h3>Open Replay:</h3>
+			    <div class="settingrow">
+						<input type="file" id="openreplayfile">
+                </div>
+				<br>
+				<h3>Past Replays:</h3>
+				<div id="historycontinaer">
+
+				</div>
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
+		</div>
             <div class="themepannel">
                 <a href="javascript:void(0)" class="theme_closebtn">×</a>
                 <div class="settingrow">
@@ -212,6 +234,11 @@
                 <div class="settingrow">
                     <p>2022</p>
                 </div>
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
             </div>
             <div id="settingspannel" class="sidepanel">
                 <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
@@ -271,8 +298,18 @@
 					<br>
 					<br>
 					<br>
+					
                 </div>
             </div>
+				<br>
+					<br>
+					<br>
+					<br>
+					<br>	<br>
+					<br>
+					<br>
+					<br>
+					<br>
 </body>
 
 </html>

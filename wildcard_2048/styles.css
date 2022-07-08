@@ -13,7 +13,7 @@ body {
     padding-top: 5%;
 }
 
-.themepannel {
+.themepannel,.replaypannel {
     width: 0;
     position: fixed;
     z-index: 2;
@@ -32,8 +32,15 @@ body {
 	display: none;
 }
 
-.themepannel p,
-.themepannel a {
+.replaypannel{
+	z-index: 3;
+}
+.replaypannel button{
+	z-index: 3;
+}
+
+.themepannel p,  
+.themepannel a, .replaypannel a {
     text-decoration: none;
     font-size: 25px;
     color: #818181;
@@ -42,7 +49,16 @@ body {
     right: 10px;
 }
 
-.themepannel .theme_closebtn {
+.replaypannel p{
+	    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    right: 10px;
+}
+
+.themepannel .theme_closebtn, .replaypannel .replay_close {
     position: absolute;
     top: 0;
     right: 200px;
@@ -109,6 +125,7 @@ body {
 
 .sidepanel button,
 .themepannel button,
+.replaypannel button,
 #loadbutton {
     border-radius: 10px;
     text-decoration: none;
@@ -117,6 +134,11 @@ body {
     background-color: rgb(43, 41, 41);
     display: block;
     transition: 0.3s;
+}
+
+.replaypannel button{
+	font-size: 18px;
+	
 }
 
 .sidepanel input,
