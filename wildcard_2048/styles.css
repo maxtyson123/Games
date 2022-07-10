@@ -517,12 +517,13 @@ h2 {
     border-radius: 5px;
     margin-left: 5px;
     margin-top: 10px;
-    width: 68%;
+    width: 75%;
     height: 20px;
     background-color: #ffffff;
     color: #ffffff;
     outline: 1px solid gainsboro;
     box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    font-size: var(--half-zoom);
  }
  
  .bar {
@@ -543,7 +544,7 @@ h2 {
     margin-left: 10px;
     background-color: royalblue;
     color: #ffffff;
-
+    font-size: var(--half-zoom);
     border-color: #ffffff;
  }
 

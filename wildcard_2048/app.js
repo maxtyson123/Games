@@ -4,29 +4,30 @@ if (!window.location.href.includes("index.html")) {
 }
 openNav = "";
 closeNav = "";
-//FINAL
-//make ai, ai give hint or image
-//NEXT:
+//__________________Done this update___________________________
+//Added Zoom to replay controlls
+//Added Saving
+//Added Sharing
+//Fixed Replay PRogress Bar
+//Added restarting Replay
+//Added Support for cross sized boards
 
-//CANT LOOSE
+//_______________________NEXT__________________________________
 
-//Replay
-
-//--sharing
-//--Replays for  bigger boards
-
+/////Game modes
 //Upsidedown 
 //tertirs
 //cnsl ver
 
-//Remake Tiles b4:
+//__________________Remake Tiles b4___________________________
 //flappy 
 //racing
 //Replay direction
 //Animate Back
 
 //Gamemode exporting
-
+//_______________________________FINAL________________________
+//make ai, ai give hint or image
 //COMENT all this uhgh 
 
 function loaded() {
@@ -82,14 +83,18 @@ function loaded() {
 		zoom = settingsData.zoom;
 	}
 	function updatezoom() {
+
 		root = document.documentElement;
 		root.style.setProperty('--anim-move', "-" + zoom + "px");
 		root.style.setProperty('--full-zoom', zoom + "px");
+		root.style.setProperty('--half-zoom', zoom / 6 + "px");
 		root.style.setProperty('--tile-zoom', zoom - (zoom / 10) + "px");
 		root.style.setProperty('--border-zoom', (zoom / 10) / 2 + "px");
 		for (let g = 0; g < games.length; g++) {
 			games[g].gridDisplay.style.width = width * zoom + "px";
 			games[g].gridDisplay.style.height = width * zoom + "px";
+            games[g].checkGameOver();
+            games[g].checkWin();
 			if (customThemeActive) {
 				games[g].themeBoard(cus_theme);
 			} else {
@@ -337,6 +342,7 @@ function loaded() {
 
 
 	openNav = function openNavFunct() {
+        
 		settingsData.opened = true;
 		setCookie("settingsData", JSON.stringify(settingsData), 1);
 		document.getElementById("settingspannel").style.width = "250px";
@@ -444,6 +450,7 @@ function loaded() {
 	///////////UI//////////////
 	function openThemeMaker() {
 		debug("funct_openthememaker", 2);
+        closeReplay();
 		themeMakerDisplay.style.width = "250px";
 		setCookie("theme-open", "yes", 1);
 	}
@@ -453,14 +460,7 @@ function loaded() {
 		themeMakerDisplay.style.width = "0";
 		setCookie("theme-open", "no", 1);
 	}
-	let thememakerOpened = getCookie("theme-open");
-	if (thememakerOpened != "") {
-		if (thememakerOpened == "yes")
-			openThemeMaker()
-		else
-			closeThemeMaker()
-
-	}
+	
 
 	//TileSelector
 	const themeTilelDisplay = document.querySelector('#themeTile');
@@ -1059,7 +1059,7 @@ function loaded() {
 			var encoded = btoa(JSON.stringify(jsonedTheme));
 			sharethemeinputbox.value = encoded;
 			sharethemeinputbox.style.display = "block";
-			sharetext.innerHTML = "Copy this text and share it with whoever. (Click inside and press ctrl-a then copy) or share this link <a href='" + website[0] + ".html?rawTheme=" + encoded + "'>Link to Theme</a>";
+			sharetext.innerHTML = "Copy this text and share it with whoever. (Click inside and press ctrl-a then copy) or email this file <a href='" + website[0] + ".html?rawTheme=" + encoded + "'>Link to Theme</a>";
 		} else {
 			sharetext.innerHTML = "Please note you need a theme to use this tool."
 		}
@@ -1115,8 +1115,6 @@ function loaded() {
 			sharethemeinputbox.value = "ERROR LOADING";
 		}
 		if (jsondata.encodedproperly == "it_works_pls_dont_mess_with_this_otherwise_it_breaks") {
-
-
 			setCookie("customTheme", decoded, 365);
 			tilenum = 0;
 			loadtilefromsave();
@@ -1284,6 +1282,15 @@ function loaded() {
 	}
 
 	function setTHeming() {
+        let thememakerOpened = getCookie("theme-open");
+        if (thememakerOpened != "") {
+            if (thememakerOpened == "yes")
+                openThemeMaker();
+                
+            else
+                closeThemeMaker()
+
+        }
 		themeMakerOpen.addEventListener("click", openThemeMaker);
 		themeMakerClose.addEventListener("click", closeThemeMaker);
 		themeTilelDisplay.innerHTML = "<p>" + tempnum + "</p>";
@@ -1298,6 +1305,7 @@ function loaded() {
 		loadthemebutton.addEventListener("click", loadtheme);
 		presetthemebutton.addEventListener("click", presettheme);
 		loadbutton.addEventListener("click", loadthemedata);
+        
 	}
 	////////////////////////////////////////////////////////Replay////////////////////////////////////////////////////////////
 	//--------------------------------------------------------------------------------------------------------------------//
@@ -1305,10 +1313,15 @@ function loaded() {
 	//--------------------------------------------------------------------------------------------------------------------//
 
 	const replaypannel = document.getElementById("replaypannel");
+	const sharereplaydata = document.getElementById("sharereplaydata");
+	const loadReplay = document.getElementById("loadReplay");
 	const historycontinaer = document.getElementById("historycontinaer");
 	const openbutton = document.getElementById("openreplayfile");
 	const closebutton = document.querySelector(".replay_close");
+    var play_pause = {};
+	var cancelothers = false;
 
+    var resdata = {};
 	localStorageSpace = function () {
 		var allStrings = '';
 		for (var key in window.localStorage) {
@@ -1330,6 +1343,9 @@ function loaded() {
 			fr.readAsText(fileList[0]);
 		}
 	});
+    loadReplay.addEventListener('click',function(){
+        openreplfile(sharereplaydata.value);
+    })
 
 	//--------------------------------------------------------------------------------------------------------------------//
 	//________________________________________________Replay-Functions____________________________________________________//
@@ -1338,6 +1354,7 @@ function loaded() {
 	/////////// UI
 
 	openReplay = function openReplay() {
+        closeThemeMaker();
 		settingsData.replayopened = true;
 		setCookie("settingsData", JSON.stringify(settingsData), 1);
 		replaypannel.style.width = "250px";
@@ -1450,20 +1467,67 @@ function loaded() {
 		}
 	}
 
+
+
+    function begin_sharereplay(){
+        shareReplay(resdata.replaydata)
+    }
+    function begin_savereplay(){
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/text,' + encodeURI(btoa(JSON.stringify(resdata.replaydata)));
+        hiddenElement.target = '_blank';
+        hiddenElement.download = "(" + resdata.replaydata.time + ")_" + resdata.replaydata.best + "_[" + resdata.replaydata.id + "]_.replay";
+        hiddenElement.click();
+       
+    }
+    function begin_restarting(){
+        replay(resdata.game,resdata.replaydata)
+       
+    }
+    function shareReplay(data){
+        sharethemediv.style.display = "block";
+		loadbutton.style.display = "none";
+		sharetitle.innerHTML = "Share Replay";
+		presets.style.display = "none";
+		var encoded = btoa(JSON.stringify(data));
+		sharethemeinputbox.value = encoded;
+		sharethemeinputbox.style.display = "block";
+		sharetext.innerHTML = "Copy this text and share it with whoever. (Click inside and press ctrl-a then copy) or copy the text above and email it via this link: <a href='mailto:example@example.com?subject=I've shared my replay with you!&body=Copy the text below into the replay section of this website: "+website[0]+" Data to Copy: INSERT_TEXT_FROM_WEBSITE'>Email Link</a>";
+     }
+
 	//////////////////////////       Playback
 	function openreplfile(repfile) {
 		decodedfile = atob(repfile);
-		repdata = JSON.parse(decodedfile);
+        try
+        {
+            repdata = JSON.parse(decodedfile);
+        }
+        catch (err)
+        {
+            sharereplaydata.value = "Error Loading";   
+        }
+		
+        try
+        {
+            parseInt(repdata.id)
+        }
+        catch (err)
+        {
+            sharereplaydata.value = "Error Loading";   
+        }
 		for (let x = 0; x < games.length; x++) {
 			if (games[x].gameId == repdata.id) {
 				settingsData = repdata.settings;
 				loadsettingstovar();
+                updatezoom();
+                games[x].gridDisplay.innerHTML = "";
+                games[x].squares.length = 0;
+                games[x].createBoard();
 				replay(games[x], JSON.stringify(repdata))
 			}
 		}
 	};
-    play_pause = {};
-	cancelothers = false;
+
 	function replay(game, replaydata) {
         replaydisplay = document.getElementById("speed-" + game.gameId);
         replayspeed = replaydisplay.innerHTML.split("");
@@ -1478,6 +1542,8 @@ function loaded() {
 		replaydata = JSON.parse(replaydata);
 		game.scoreResult.style.display = "none";
 		game.allowInput = false;
+        resdata.game = game;
+        resdata.replaydata = JSON.stringify(replaydata);
 		if(game.replaying){
 			cancelothers = true;
 			setTimeout(function () {
@@ -1494,7 +1560,8 @@ function loaded() {
 
 	}
 
-	function replayStep(x, game, replaydata,replayspeed=250) {
+	function replayStep(x, game, replaydata,) {
+ 
         play_pause.html = document.getElementById('play_pause-' + game.gameId);
         if(play_pause.html.innerHTML == "Play"){
             play_pause.x = x;
@@ -1550,7 +1617,7 @@ function loaded() {
 			if (x != replaydata.max-1 && !cancelothers)
 				replayStep(x + 1, game, replaydata)
 			else {
-
+                bardisplay.innerHTML = "Finished"
 				settingsData = JSON.parse(getCookie("settingsData"));
 				loadsettingstovar();
 			}
@@ -1767,14 +1834,37 @@ function loaded() {
             container_contrls.appendChild(play_pause);
             container_contrls.appendChild(progress_div);
             container_contrls.appendChild(spped_button);
-
+            //Replay Options Controls
+            container_contrls_options = document.createElement('div');
+			container_contrls_options.classList.add("settingrow");
             //close_replay
             close_replay = document.createElement('button');
             close_replay.classList.add("play");
             close_replay.id = "close_replay-" + selector;
             close_replay.innerHTML = "Close Replay"
+            //Share
+            share_replay = document.createElement('button');
+            share_replay.classList.add("play");
+            share_replay.id = "share_replay-" + selector;
+            share_replay.innerHTML = "Share Replay"
+            //Save
+            save_replay = document.createElement('button');
+            save_replay.classList.add("play");
+            save_replay.id = "save_replay-" + selector;
+            save_replay.innerHTML = "Save Replay"
+            //Restart
+            restart_replay = document.createElement('button');
+            restart_replay.classList.add("play");
+            restart_replay.id = "restart_replay-" + selector;
+            restart_replay.innerHTML = "Restart Replay"
+
+            container_contrls_options.appendChild(close_replay)
+            container_contrls_options.appendChild(share_replay)
+            container_contrls_options.appendChild(save_replay)
+            container_contrls_options.appendChild(restart_replay)
+
             row3div.appendChild(container_contrls);
-            row3div.appendChild(close_replay);
+            row3div.appendChild(container_contrls_options);
             replay_containerdiv.appendChild(row3div);
 
 			paddingdiv.appendChild(score_containerdiv);
@@ -1787,7 +1877,10 @@ function loaded() {
 			document.getElementById('remove-' + selector).addEventListener('click', this.remove.bind(this), false); ///BINDING
 			document.getElementById('speed-' + selector).addEventListener('click', this.replayspeed.bind(this), false); ///BINDING
 			document.getElementById('play_pause-' + selector).addEventListener('click', this.playpause.bind(this), false); ///BINDING
-			document.getElementById('close_replay-' + selector).addEventListener('click', function(){location.reload()}, false); ///BINDING
+			document.getElementById('close_replay-' + selector).addEventListener('click', function(){location.href = website[0] + ".html";}, false); ///BINDING
+			document.getElementById('share_replay-' + selector).addEventListener('click', begin_sharereplay, false); ///BINDING
+			document.getElementById('save_replay-' + selector).addEventListener('click', begin_savereplay, false); ///BINDING
+			document.getElementById('restart_replay-' + selector).addEventListener('click', begin_restarting, false); ///BINDING
 			this.movesdisplay = document.querySelector('#moves-' + selector);
 			this.scoreDisplay = document.querySelector('#score-' + selector);
 			this.hscoreDisplay = document.querySelector('#hscore-' + selector);
@@ -2181,7 +2274,7 @@ function loaded() {
 				game.scoreResult.style.left = game.gridDisplay.getBoundingClientRect().left + "px";
 				game.scoreResult.style.width = (width * zoom) + 8 + "px";
 				game.scoreResult.style.height = (width * zoom) + 8 + "px";
-				game.scoreResult.classList.add("gameoverbg");
+				game.scoreResult.className = "result gameoverbg";
 				if(!game.replaying){
 					game.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button id='replay-" + game.gameId + "'>Restart</button><br><button id='watchreplay-" + game.gameId + "'>Watch Replay</button><button id='savereplay-" + game.gameId + "'>Save Replay</button>";
 				}else{
@@ -2191,7 +2284,7 @@ function loaded() {
 					if(!game.replaying){
 					addtoreplayhistory(game);
 					}else{
-                        location.reload();
+                        location.href = website[0] + ".html";
                         return;
                     }
 					game.replaying = false;
@@ -2232,7 +2325,7 @@ function loaded() {
 				this.scoreResult.style.left = this.gridDisplay.getBoundingClientRect().left + "px";
 				this.scoreResult.style.width = (width * zoom) + 8 + "px";
 				this.scoreResult.style.height = (width * zoom) + 8 + "px";
-				this.scoreResult.classList.add("gamewinbg");
+                this.scoreResult.className = "result gamewinbg";
 				if(!this.replaying){
 					this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Win!</h1>   <button id='replay-" + this.gameId + "'>Restart</button><button id='cont'>Continue</button><br><button id='watchreplay-" + this.gameId + "'>Watch Replay</button><button id='savereplay-" + this.gameId + "'>Save Replay</button>"
 				}else{
@@ -2242,7 +2335,7 @@ function loaded() {
 					if(!this.replaying){
 					addtoreplayhistory(this);
 					}else{
-                        location.reload();
+                        location.href = website[0] + ".html";
                         return;
                     }
 					this.replaying = false;
@@ -2525,7 +2618,7 @@ function loaded() {
 	}
 
 	function ReloadPage() {
-		location.reload();
+		location.href = website[0] + ".html";
 		setCookie("reloadRequest", "yes", 1)
 	}
 	/////////////////////////INPUT/////////////////
@@ -2766,7 +2859,7 @@ function loaded() {
 	function debug(text, bugfixingid) { }
 	if (getCookie("reloadRequest") == "yes") {
 		setCookie("reloadRequest", "no", 1)
-		location.reload();
+		location.href = website[0] + ".html";
 		//STFU ik its a hack
 	}
 
@@ -2786,6 +2879,10 @@ function loaded() {
 	if (passedTheme != undefined) {
 		sharethemeinputbox.value = passedTheme;
 		loadthemedata();
+	}
+    var passedReplay = getUrlVar("rawReplay")
+	if (passedReplay != undefined) {
+        
 	}
 
 }
@@ -2817,7 +2914,7 @@ function getCookie(cname) {
 
 function resetTheme() {
 	setCookie("customTheme", "", 365);
-	location.reload();
+	location.href = website[0] + ".html";
 }
 
 //2000+ lines with  a messed  up spacekey
