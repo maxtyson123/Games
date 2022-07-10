@@ -1,5 +1,7 @@
 html,
 body {
+    scroll-behavior: smooth;
+
     background: #ffffffab;
     color: #ffffff;
     font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
@@ -551,3 +553,4 @@ h2 {
  .replaycontrols{
     display: none;
  }
+
