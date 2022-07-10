@@ -12,8 +12,6 @@ closeNav = "";
 
 //Replay
 
-//--game ver data
-//--replay controls speed
 //--sharing
 //--Replays for  bigger boards
 
@@ -34,8 +32,8 @@ closeNav = "";
 function loaded() {
 
 	vecookie = getCookie("version");
-	if (vecookie != "18") {
-		setCookie("version", "18", 356);
+	if (vecookie != "20") {
+		setCookie("version", "20", 356);
 		setCookie("settingsData", "", 356);
 		setCookie("savedgames", "", 356);
 
@@ -429,7 +427,7 @@ function loaded() {
 	default_glowCol = "#FFFFFF";
 	zerocol = "rgb(128, 190, 128)"
 	boardcol = "#cacece"
-	bodytextcol = "#776e65"
+	bodytextcol = "#ffffff"
 	bodybgcol = "#72b182ab"
 	scorecol = "#808080";
 	tagline = "WildCard";
@@ -1261,11 +1259,11 @@ function loaded() {
 
 			document.body.style.background = gameTheme[2];
 			document.body.style.color = gameTheme[3];
-			textclasses = document.querySelectorAll("p, .scoretab, .side-item");
+			textclasses = document.querySelectorAll("p, .scoretab, .side-item, .bar, .play");
 			for (let y = 0; y < textclasses.length; y++) {
 				textclasses[y].style.color = gameTheme[3];
 			}
-			sidecols = document.querySelectorAll(" .side-item");
+			sidecols = document.querySelectorAll(".side-item, .progress");
 			for (let y = 0; y < sidecols.length; y++) {
 				sidecols[y].style.borderColor = gameTheme[1];
 			}
@@ -1273,7 +1271,7 @@ function loaded() {
 			this.gridDisplay.style.backgroundColor = zerocol;
 			tilestotheme = this.gridDisplay.children;
 			document.querySelector("#tagline").innerHTML = gameTheme[5];
-			scoresclass = document.querySelectorAll(".scoretab, .side-item");
+			scoresclass = document.querySelectorAll(".scoretab, .side-item, .bar, .play");
 			for (let y = 0; y < scoresclass.length; y++) {
 				scoresclass[y].style.backgroundColor = gameTheme[4];
 			}
@@ -1353,11 +1351,23 @@ function loaded() {
 				historyData = JSON.parse(historyJson.saved[x]);
 				historyItem = document.createElement("div");
 				historyTitle = document.createElement("p");
-				historyTitle.innerHTML = historyData.time +", "+historyData.settings.goal;
+                if(historyData.best != undefined){
+                    historyTitle.innerHTML = historyData.time +", "+historyData.best;
+                }else{
+                    historyTitle.innerHTML = historyData.time +", "+historyData.settings.goal;
+                }
+				
 				historyItem.appendChild(historyTitle);
 				historyreplay = document.createElement("button");
 				historyreplay.innerHTML = "Play Replay";
-				historyreplay.addEventListener("click", function () { openreplfile(btoa(JSON.stringify(historyData))) })
+				historyreplay.replaydadata = historyData;
+				historyreplay.addEventListener("click", function (evt) { 	
+					openreplfile(
+						btoa(
+							JSON.stringify(evt.currentTarget.replaydadata)
+							)
+						) 
+					})
 				historyItem.appendChild(historyreplay);
 				historycontinaer.appendChild(historyItem);
 
@@ -1417,22 +1427,22 @@ function loaded() {
 
 	function genarateReplay(game, type) {
 		var today = new Date().toLocaleDateString();
-		function ReplayData(initial, states, max, settings) {
+		function ReplayData(initial, states, max, settings,best) {
 			this.id = game.gameId;
 			this.time = today;
 			this.initial = initial;
 			this.state = states;
 			this.settings = settings;
 			this.max = max;
+			this.best = best;
 		}
-		repdata = new ReplayData(game.backdata[0], game.backdata, game.backdata.length, settingsData);
+		repdata = new ReplayData(game.backdata[0], game.backdata, game.backdata.length, settingsData, game.ctile);
 		replaydata = JSON.stringify(repdata);
 		if (type == "file") {
 			var hiddenElement = document.createElement('a');
 			hiddenElement.href = 'data:attachment/text,' + encodeURI(btoa(replaydata));
 			hiddenElement.target = '_blank';
-
-			hiddenElement.download = "(" + today + ")_" + goal + "_[" + game.gameId + "]_.replay";
+			hiddenElement.download = "(" + today + ")_" + game.ctile + "_[" + game.gameId + "]_.replay";
 			hiddenElement.click();
 		}
 		if (type == "json") {
@@ -1452,28 +1462,71 @@ function loaded() {
 			}
 		}
 	};
-
+    play_pause = {};
 	cancelothers = false;
 	function replay(game, replaydata) {
-		
+        replaydisplay = document.getElementById("speed-" + game.gameId);
+        replayspeed = replaydisplay.innerHTML.split("");
+        a = replayspeed.pop();
+        replayspeed = replayspeed.join("");
+        replayspeed = parseInt(replayspeed)
+        if(replayspeed == 0){
+            replayspeed = 0.5;
+        }
+        replayspeed = 500 / replayspeed;
+		document.getElementById("replaycontrol-" + game.gameId).style.display = "block";
 		replaydata = JSON.parse(replaydata);
 		game.scoreResult.style.display = "none";
 		game.allowInput = false;
 		if(game.replaying){
-				cancelothers = true;
+			cancelothers = true;
+			setTimeout(function () {
+				cancelothers = false;
+				game.replaying = false;
+				replay(game, JSON.stringify(replaydata))
+				},(replayspeed+200))
+		}else{
+			game.replaying = true;
+			loadgame(replaydata.initial, game, true)
+			replayStep(1, game, replaydata)
 		}
-		game.replaying = true;
-		loadgame(replaydata.initial, game, true)
-		replayStep(1, game, replaydata)
+
 
 	}
 
-	function replayStep(x, game, replaydata) {
-		if(!cancelothers){
+	function replayStep(x, game, replaydata,replayspeed=250) {
+        play_pause.html = document.getElementById('play_pause-' + game.gameId);
+        if(play_pause.html.innerHTML == "Play"){
+            play_pause.x = x;
+            play_pause.game = game;
+            play_pause.replaydata = replaydata;
+            return;
+        }
+        replaydisplay = document.getElementById("speed-" + game.gameId);
+        replayspeed = replaydisplay.innerHTML.split("");
+        a = replayspeed.pop();
+        replayspeed = replayspeed.join("");
+        replayspeed = parseInt(replayspeed)
+        if(replayspeed == 0){
+            replayspeed = 0.5;
+        }
+        replayspeed = 500 / replayspeed;
+        if(replaydata.state[x].keyPressed == "inital"){
+            replayspeed = 100;
+        }
 		setTimeout(function () {
-				if(!cancelothers){
 			loadgame(replaydata.state[x - 1], game, true)
-			key = replaydata.state[x].keyPressed;
+            key = replaydata.state[x].keyPressed;
+            bardisplay = document.getElementById("bar-" + game.gameId);
+            if(key == "inital"){
+                bardisplay.innerHTML = x + " / Loading";
+                bardisplay.style.width = "100%";
+            }else{
+                bardisplay.innerHTML = x + "/"+(replaydata.max-1);
+                bardisplay.style.width = (x/(replaydata.max-1))*100 + "%";
+            }
+         
+			
 			console.log(key + "_" + x)
 			if (key == "left") {
 				game.keyLeft();
@@ -1494,20 +1547,15 @@ function loaded() {
 			}
 			game.movesdisplay.innerHTML = parseInt(game.movesdisplay.innerHTML) + 1;
 
-			if (x != replaydata.max-1)
+			if (x != replaydata.max-1 && !cancelothers)
 				replayStep(x + 1, game, replaydata)
 			else {
-				game.replaying = false;
+
 				settingsData = JSON.parse(getCookie("settingsData"));
 				loadsettingstovar();
 			}
-				}else{
-					cancelothers = false;
-				}
-		}, 250);
-		}else{
-					cancelothers = false;
-				}
+		}, replayspeed);
+	
 	}
 
 
@@ -1685,13 +1733,61 @@ function loaded() {
 			row2div.appendChild(col3div);
 			row2div.appendChild(col4div);
 			tile_containerdiv.appendChild(row2div);
+            //Replay Controls
+            replay_containerdiv = document.createElement('div');
+            replay_containerdiv.classList.add("replaycontrols");
+            replay_containerdiv.id = "replaycontrol-" + selector;
+            //Row 3
+            row3div = document.createElement('div');
+			row3div.classList.add("row");
+            //COntrols Container
+            container_contrls = document.createElement('div');
+			container_contrls.classList.add("settingrow");
+            //Play/Pause
+            play_pause = document.createElement('button');
+            play_pause.classList.add("play");
+            play_pause.id = "play_pause-" + selector;
+            play_pause.innerHTML = "Pause"
+            //Progress
+            progress_div = document.createElement('div');
+            progress_div.classList.add("progress");
+            //Bar
+            bar_div = document.createElement('div');
+            bar_div.classList.add("bar");
+            bar_div.id = "bar-" + selector;
+            bar_div.innerHTML = "1/1"
+            //PlayBack Speed
+            spped_button = document.createElement('button');
+            spped_button.classList.add("play");
+            spped_button.id = "speed-" + selector;
+            spped_button.innerHTML = "1x"
+              
+            progress_div.appendChild(bar_div);
+
+            container_contrls.appendChild(play_pause);
+            container_contrls.appendChild(progress_div);
+            container_contrls.appendChild(spped_button);
+
+            //close_replay
+            close_replay = document.createElement('button');
+            close_replay.classList.add("play");
+            close_replay.id = "close_replay-" + selector;
+            close_replay.innerHTML = "Close Replay"
+            row3div.appendChild(container_contrls);
+            row3div.appendChild(close_replay);
+            replay_containerdiv.appendChild(row3div);
+
 			paddingdiv.appendChild(score_containerdiv);
 			paddingdiv.appendChild(game_containerdiv);
 			paddingdiv.appendChild(tile_containerdiv);
+			paddingdiv.appendChild(replay_containerdiv);
 			gamespace.appendChild(paddingdiv);
 			document.getElementById('goback-' + selector).addEventListener('click', this.goback.bind(this), false); ///BINDING
 			document.getElementById('reset-' + selector).addEventListener('click', this.reset3.bind(this), false); ///BINDING
 			document.getElementById('remove-' + selector).addEventListener('click', this.remove.bind(this), false); ///BINDING
+			document.getElementById('speed-' + selector).addEventListener('click', this.replayspeed.bind(this), false); ///BINDING
+			document.getElementById('play_pause-' + selector).addEventListener('click', this.playpause.bind(this), false); ///BINDING
+			document.getElementById('close_replay-' + selector).addEventListener('click', function(){location.reload()}, false); ///BINDING
 			this.movesdisplay = document.querySelector('#moves-' + selector);
 			this.scoreDisplay = document.querySelector('#score-' + selector);
 			this.hscoreDisplay = document.querySelector('#hscore-' + selector);
@@ -1737,6 +1833,30 @@ function loaded() {
 
 
 		},
+        replayspeed: function(){
+            
+            spped = document.querySelector('#speed-' + this.gameId);
+            
+            if(spped.innerHTML == "1x"){
+                spped.innerHTML = "2x";
+            }else if(spped.innerHTML == "2x"){
+                spped.innerHTML = "4x";
+            }else if(spped.innerHTML == "4x"){
+                spped.innerHTML = "0.5x";
+            }else if(spped.innerHTML == "0.5x"){
+                spped.innerHTML = "1x";
+            }
+
+        },
+        playpause: function(){
+            play_pause.html = document.getElementById('play_pause-' + this.gameId);
+            if(play_pause.html.innerHTML == "Play"){          
+                play_pause.html.innerHTML = "Pause";
+                replayStep(play_pause.x,play_pause.game,play_pause.replaydata)
+            }else{
+                play_pause.html.innerHTML = "Play";
+            }
+        },
 		squares: [],
 		moves: 0,
 		score: 0,
@@ -2046,60 +2166,51 @@ function loaded() {
 				}
 			}
 			if (!possible) {
-				this.paused = true;
-				this.scoreResult.style.display = "block";
-				this.scoreResult.style.left = this.gridDisplay.getBoundingClientRect().left + "px";
-				this.scoreResult.style.width = (width * zoom) + 8 + "px";
-				this.scoreResult.style.height = (width * zoom) + 8 + "px";
-				this.scoreResult.classList.add("gameoverbg");
-				this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button id='replay-" + this.gameId + "'>Restart</button><br<<button id='watchreplay-" + this.gameId + "'>Watch Replay</button><button id='savereplay-" + this.gameId + "'>Save Replay</button>";
-				document.getElementById('replay-' + this.gameId).addEventListener('click', function () {
-					if(!this.replaying){
-					addtoreplayhistory(this);
-					}
-					this.reset2();
-					this.scoreResult.style.display = "none";
-				}.bind(this), false); ///BINDING
-				document.getElementById('watchreplay-' + this.gameId).addEventListener('click', function () {
-					replay(this, genarateReplay(this, "json"))
-				}.bind(this), false); ///BINDING
-				document.getElementById('savereplay-' + this.gameId).addEventListener('click', function () {
-					genarateReplay(this, "file")
-				}.bind(this), false); ///BINDING
-				autoplayCheck.checked = false;
-				autoplayCheck.removeEventListener("change", autoplay);
-				this.allowInput = false;
+				game_die(this);
 			}
 
 
 		}
 		if (movecap != 0)
 			if (this.moves >= movecap) {
-				this.paused = true;
-				this.scoreResult.style.display = "block";
-				this.scoreResult.style.left = this.gridDisplay.getBoundingClientRect().left + "px";
-				this.scoreResult.style.width = (width * zoom) + 8 + "px";
-				this.scoreResult.style.height = (width * zoom) + 8 + "px";
-				this.scoreResult.classList.add("gameoverbg");
-				this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button id='replay-" + this.gameId + "'>Restart</button><br><button id='watchreplay-" + this.gameId + "'>Watch Replay</button><button id='savereplay-" + this.gameId + "'>Save Replay</button>";
-				document.getElementById('replay-' + this.gameId).addEventListener('click', function () {
-					if(!this.replaying){
-					addtoreplayhistory(this);
+				game_die(this);
+			}
+		function game_die(game){
+				game.paused = true;
+				game.scoreResult.style.display = "block";
+				game.scoreResult.style.left = game.gridDisplay.getBoundingClientRect().left + "px";
+				game.scoreResult.style.width = (width * zoom) + 8 + "px";
+				game.scoreResult.style.height = (width * zoom) + 8 + "px";
+				game.scoreResult.classList.add("gameoverbg");
+				if(!game.replaying){
+					game.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button id='replay-" + game.gameId + "'>Restart</button><br><button id='watchreplay-" + game.gameId + "'>Watch Replay</button><button id='savereplay-" + game.gameId + "'>Save Replay</button>";
+				}else{
+					game.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Lose</h1><button id='replay-" + game.gameId + "'>Close Replay</button>";					
+				}
+				document.getElementById('replay-' + game.gameId).addEventListener('click', function () {
+					if(!game.replaying){
+					addtoreplayhistory(game);
+					}else{
+                        location.reload();
+                        return;
+                    }
+					game.replaying = false;
+					game.reset2();
+					game.scoreResult.style.display = "none";
+				}.bind(game), false); ///BINDING
+				document.getElementById('watchreplay-' + game.gameId).addEventListener('click', function () {
+					if(!game.replaying){
+					addtoreplayhistory(game);
 					}
-					this.reset2();
-					this.scoreResult.style.display = "none";
-				}.bind(this), false); ///BINDING
-				document.getElementById('watchreplay-' + this.gameId).addEventListener('click', function () {
-					replay(this, genarateReplay(this, "json"))
-				}.bind(this), false); ///BINDING
-				document.getElementById('savereplay-' + this.gameId).addEventListener('click', function () {
-					genarateReplay(this, "file")
-				}.bind(this), false); ///BINDING
+					replay(game, genarateReplay(game, "json"))
+				}.bind(game), false); ///BINDING
+				document.getElementById('savereplay-' + game.gameId).addEventListener('click', function () {
+					genarateReplay(game, "file")
+				}.bind(game), false); ///BINDING
 				autoplayCheck.checked = false;
 				autoplayCheck.removeEventListener("change", autoplay);
-				this.allowInput = false;
-			}
-
+				game.allowInput = false;
+		}
 
 	}
 
@@ -2122,22 +2233,35 @@ function loaded() {
 				this.scoreResult.style.width = (width * zoom) + 8 + "px";
 				this.scoreResult.style.height = (width * zoom) + 8 + "px";
 				this.scoreResult.classList.add("gamewinbg");
-				this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Win!</h1>   <button id='replay-" + this.gameId + "'>Restart</button><button id='cont'>Continue</button><br><button id='watchreplay-" + this.gameId + "'>Watch Replay</button><button id='savereplay-" + this.gameId + "'>Save Replay</button>"
+				if(!this.replaying){
+					this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Win!</h1>   <button id='replay-" + this.gameId + "'>Restart</button><button id='cont'>Continue</button><br><button id='watchreplay-" + this.gameId + "'>Watch Replay</button><button id='savereplay-" + this.gameId + "'>Save Replay</button>"
+				}else{
+					this.scoreResult.innerHTML = "<h1 style='font-size: " + width * 10 + "px;'>You Win!</h1>   <button id='replay-" + this.gameId + "'>Close Replay</button>"
+				}
 				document.getElementById('replay-' + this.gameId).addEventListener('click', function () {
 					if(!this.replaying){
 					addtoreplayhistory(this);
-					}
+					}else{
+                        location.reload();
+                        return;
+                    }
+					this.replaying = false;
 					this.reset2();
 					this.scoreResult.style.display = "none";
 				}.bind(this), false);
+				if(!this.replaying){
 				document.getElementById("cont").addEventListener("click", function () {
 					this.continueGame(this);
 				}.bind(this)); document.getElementById('watchreplay-' + this.gameId).addEventListener('click', function () {
+					if(!this.replaying){
+					addtoreplayhistory(this);
+					}
 					replay(this, genarateReplay(this, "json"))
 				}.bind(this), false); ///BINDING
 				document.getElementById('savereplay-' + this.gameId).addEventListener('click', function () {
 					genarateReplay(this, "file")
 				}.bind(this), false); ///BINDING
+				}
 				autoplayCheck.checked = false;
 				autoplayCheck.removeEventListener("change", autoplay);
 				this.allowInput = false;
@@ -2216,6 +2340,7 @@ function loaded() {
 
 		}
 		this.checkh_best();
+        this.ctile = best;
 		this.bestDisplay.innerHTML = best;
 
 
@@ -2380,6 +2505,8 @@ function loaded() {
 		game.bestDisplay.innerHTML = "2";
 		game.movesdisplay.innerHTML = game.moves;
 		game.scoreDisplay.innerHTML = game.score;
+
+        document.getElementById("replaycontrol-" + game.gameId).style.display = "none";
 		game.gridDisplay.innerHTML = "";
 		if (mode != 1) {
 			game.createBoard();
