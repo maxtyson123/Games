@@ -11,32 +11,26 @@ closeNav = "";
 //Tetris Combining
 //Tetris Movement
 //Fixed Tile Num Display
+//Replay speed effects tile anims
 
 //_______________________NEXT__________________________________
 
-//Game modes
+//Join Mode plus, minus, combine subtract
+//Replay duplication
+//Fix tetris replays again
 
-//				Tetris
-//Can still combine thru walls
-//Faster
-//Fix Replay 
 
 //Gamemode exporting
-
-//Clock Theme
-
-//Join Mode plus, minus, combine subtract
-
 
 //__________________Remake Tiles b4___________________________
 //Remake: save b4 combine, move each tile incrementally using the new filter array methord
 
-
+//Replay direction backward/forward
+//Animate Back
 //Game modes
 //--flappy 
 //--racing
-//Replay direction backward/forward
-//Animate Back
+
 
 //______________________FINAL_________________________________
 
@@ -46,7 +40,7 @@ closeNav = "";
 //_______________________FUTURE________________________________
 
 
-//mod maker
+//mod maker  -  your dreaming if you  expect me to do this
 
 function loaded() {
 
@@ -430,6 +424,8 @@ function loaded() {
 		closeNav();
 
 	function setSettings() {
+		root = document.documentElement;
+		root.style.setProperty('--anim-speed', "0.2s");
 		setspawn(0);
 		setgoal(0);
 		sizeDisplay.innerHTML = "<p>" + width + "</p>";
@@ -1664,7 +1660,10 @@ function loaded() {
 		if (replayspeed == 0) {
 			replayspeed = 0.5;
 		}
+		root = document.documentElement;
+		root.style.setProperty('--anim-speed', 0.2/replayspeed+"s");
 		replayspeed = 500 / replayspeed;
+		
 		if (replaydata.state[x].keyPressed == "inital") {
 			replayspeed = 100;
 		}
@@ -1678,15 +1677,7 @@ function loaded() {
 				bardisplay.innerHTML = x + "/" + (replaydata.max - 1);
 				bardisplay.style.width = (x / (replaydata.max - 1)) * 100 + "%";
 			}
-			if(settingsData.gamemode == "Tetris"){
-				loadgame(replaydata.state[x], game, true)
-			}else{
-				loadgame(replaydata.state[x - 1], game, true)
-			}
-			
-			
-			
-
+			loadgame(replaydata.state[x - 1], game, true)
 			console.log(key + "_" + x)
 			if (key == "left") {
 				game.keyLeft();
@@ -1699,6 +1690,26 @@ function loaded() {
 			}
 			else if (key == "down") {
 				game.keydown();
+			}else if (key == "gravity") {
+				game.moveDown();
+								for (let y = 0; y < width; y++) {
+							if(parseInt(game.squares[y].innerHTML) == 0){
+								
+							}else{
+								game.checkGameOver.game_die(game);
+							}
+				}
+			}else if (key == "gift") {
+				game.generate();
+				loadgame(replaydata.state[x], game, true);
+			}else if (key == "combine_row") {
+				game.combineRow();
+				game.moveDown();
+	
+			}
+			else if (key == "combine_down") {
+				game.combineCol("down");
+	
 			}
 			if (customThemeActive) {
 				game.themeBoard(cus_theme); //FIX LATER
@@ -2062,8 +2073,9 @@ function loaded() {
 				if (!this.moved) {
 					if(this.combineCol("down")){
 						this.moveDown();
+						this.keyPressed = "combine_down"
 					}else if (this.combineRow()){
-
+								this.keyPressed = "combine_row";
 					}
 					else{			
 						for (let y = 0; y < width; y++) {
@@ -2075,7 +2087,6 @@ function loaded() {
 						}
 						this.generate();
 						this.keyPressed = "gift"
-						savegame(this)
 					}
 					
 					if (customThemeActive) {
@@ -2083,19 +2094,21 @@ function loaded() {
 					} else {
 						this.themeBoard(def_theme);
 					}
-					this.keyPressed = "gravity"
+			
 					savegame(this)
 				}
 				setTimeout(function () {
 					
-					this.keyPressed = "gravity"
+					
 					if(this.combineCol("down")){
+						this.keyPressed = "combine_down";
 						this.moveDown();
 					}else if (this.combineRow()){
-						
+						this.keyPressed = "combine_row";
 					}
 					else{			
 						this.moveDown();
+						this.keyPressed = "gravity";
 						for (let y = 0; y < width; y++) {
 							if(parseInt(this.squares[y].innerHTML) == 0){
 								
@@ -2236,7 +2249,7 @@ function loaded() {
 					if (row[y] > row[y + 1] && y + 1 != filteredRow.length && row[y + 1] == 0 && actives[y]) {
 
 						filteredRow[y + 1] = row[y];
-						filteredRow[y] = row[y - 1];
+						filteredRow[y] = row[y + 1];
 						actives[y + 1] = true;
 						actives[y] = false;
 						if (filteredRow[y] == undefined) {
@@ -2503,47 +2516,21 @@ function loaded() {
 
 						}
 						if (!dontdo) {
-							this.squares[x].innerHTML = combinedTotal;
-							this.squares[x + 1].innerHTML = 0;
+							if(this.squares[x].active){
+								this.squares[x].innerHTML = combinedTotal;
+								this.squares[x + 1].innerHTML = 0;	
+							}
+							if(this.squares[x + 1].active){
+								this.squares[x].innerHTML = 0;
+								this.squares[x + 1].innerHTML = combinedTotal;
+							}
+							
 							this.score += combinedTotal;
 						}
 					}
 				}
 			}
-			if (x != 0) {
-				if (this.squares[x].innerHTML === this.squares[x - 1].innerHTML) {
-					mode = "left";
-					didcombine = true;
-					let combinedTotal = 0;
-					if (reverse)
-						combinedTotal = parseInt(this.squares[x].innerHTML) / 2;
-					else
-						combinedTotal = parseInt(this.squares[x].innerHTML) + parseInt(this.squares[x - 1].innerHTML);
-					if (mode != "nocheck") {
-						if (combinedTotal != 0) {
-							if ((x - 1) % (width-2) == 0) {
-								dontdo = true;
-							}
-							if (!dontdo) {
-								returntype = true;
-								this.scoreAddDisplay.innerHTML = "+" + combinedTotal;
-								this.scoreAddDisplay.className = "class_scoreadd scoreanimate";
-								setTimeout(function () {
-									this.scoreAddDisplay.className = "class_scoreadd";
-									this.scoreAddDisplay.innerHTML = "";
-								}.bind(this), 500);
-							}
-
-
-						}
-						if (!dontdo) {
-						this.squares[x].innerHTML = combinedTotal;
-						this.squares[x - 1].innerHTML = 0;
-						this.score += combinedTotal;
-						}
-					}
-				}
-			}
+			
 			if (didcombine) {
 				this.scoreDisplay.innerHTML = this.score;
 				this.checkhigh();
@@ -3014,6 +3001,7 @@ function loaded() {
 
 			}
 		}
+		
 		if (!exists) {
 			scoredata = [];
 
@@ -3398,7 +3386,7 @@ function loaded() {
 
 		return game;
 	}
-
+//P
 	function StartingGameFunctions(game) {
 		game.createBoard();
 		if (gamemode == "Tetris") {
@@ -3460,7 +3448,7 @@ function loaded() {
 		makenew();
 		rezizegameovers();
 	});
-
+//B
 	function makenew() {
 		keydiv = document.querySelector(".newboarddiv");
 		keytext = document.querySelector(".newboardtect");
@@ -3524,7 +3512,7 @@ function loaded() {
 				if (gamemode == "Upsidedown") {
 					howtoplaytext.push("Same as regular " + goal + " but instead the controls have been inverted and the tiles have been flipped upside down");
 				} else if (gamemode == "Tetris") {
-					howtoplaytext.push("In this version of " + goal + " the tiles generate at the top of the board and slowly move down. When you press a key only the active tile (tile that moved or recently was "+type+"ed from another) tiles on the board move in that direction. If a tile generates in the top area and it cant fall down then it's game over.");
+					howtoplaytext.push("In this version of " + goal + " the tiles generate at the top of the board and slowly move down. When you press a key only the active tile (tile that moved or recently was "+type+"ed from another) gets moved in that direction. If a tile generates in the top area and it cant fall down then it's game over.");
 				} else{
 					howtoplaytext.push("Using the arrow keys " + type + " tiles until one of them reaches " + goal + ". When you press a key all the tiles on the board move in that direction. If a tile cannot generate and no more tiles can be "+type+"ed then its game over.");
 				}
@@ -3739,7 +3727,7 @@ function loaded() {
 
 }
 
-
+//S
 function setCookie(cname, cvalue, exdays) {
 	const d = new Date();
 	d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
