@@ -1,7 +1,7 @@
 {
 "companyName": "MaxInc",
 "productName": "Sunnylands",
-"productVersion": "1.6",
+"productVersion": "1.8",
 "dataUrl": "WebGL.data.unityweb",
 "asmCodeUrl": "WebGL.asm.code.unityweb",
 "asmMemoryUrl": "WebGL.asm.memory.unityweb",
