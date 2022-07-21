@@ -114,14 +114,11 @@
       progress.style.display = "block";
       gameInstance.progress = progress.querySelector(".full");
       loader.querySelector(".spinner").style.display = "none";
-	    gameInstance.SetFullscreen(1);
     }
     gameInstance.progress.style.transform = `scaleX(${progress})`;
     if (progress === 1 && !gameInstance.removeTimeout) {
-      gameInstance.SetFullscreen(1); 
       gameInstance.removeTimeout = setTimeout(function() {
           loader.style.display = "none";
-	      gameInstance.SetFullscreen(1);
       }, 1000);
     }
   }
