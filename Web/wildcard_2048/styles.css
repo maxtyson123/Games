@@ -1,0 +1,562 @@
+html,
+body {
+    scroll-behavior: smooth;
+
+    background: #ffffffab;
+    color: #ffffff;
+    font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 18px;
+    margin: 0;
+}
+
+.game {
+    padding-top: 5%;
+}
+
+.themepannel,.replaypannel {
+    width: 0;
+    position: fixed;
+    z-index: 2;
+    height: 100%;
+    top: 0;
+    right: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    transition: 0.5s;
+    padding-top: 60px;
+    align-items: center;
+}
+
+#remove-0{
+	display: none;
+}
+
+.replaypannel{
+	z-index: 3;
+}
+.replaypannel button{
+	z-index: 3;
+}
+
+.themepannel p,  
+.themepannel a, .replaypannel a {
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    right: 10px;
+}
+
+.replaypannel p{
+	    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    right: 10px;
+}
+
+.themepannel .theme_closebtn, .replaypannel .replay_close {
+    position: absolute;
+    top: 0;
+    right: 200px;
+    font-size: 36px;
+}
+
+.sharethemediv {
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    width: 30%;
+    position: fixed;
+    z-index: 3;
+    height: auto;
+	max-height: 90%;
+    background-color: #111;
+    transition: 0.5s;
+    display: none;
+    padding: 10px;
+	overflow-y: scroll;
+}
+.newboarddiv {
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    width: 30%;
+    position: fixed;
+    z-index: 3;
+    height: auto;
+    background-color: #111;
+    transition: 0.5s;
+    display: none;
+    padding: 10px;
+	
+}
+.sharethemediv input {
+    width: 80%;
+    margin-left: 10%;
+    overflow-y: scroll;
+}
+
+.sidepanel {
+    width: 0;
+    position: fixed;
+    z-index: 2;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidepanel p,
+.sidepanel a {
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidepanel button,
+.themepannel button,
+.replaypannel button,
+#loadbutton {
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    background-color: rgb(43, 41, 41);
+    display: block;
+    transition: 0.3s;
+}
+
+.replaypannel button{
+	font-size: 18px;
+	
+}
+
+.sidepanel input,
+.themepannel input {
+    appearance: none;
+    border-radius: 10px;
+    border: 2.5px solid #cacece;
+    color: white;
+    background-color: rgb(43, 41, 41);
+    display: block;
+    transition: 0.3s;
+    padding: 10px;
+}
+
+.makeTileConatiner {
+    padding-left: 60px !important;
+}
+
+.sidepanel input:checked,
+.themepannel input:checked {
+    appearance: none;
+    border-radius: 10px;
+    border: 2.5px solid #cacece;
+    background-color: #cacece;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidepanel a:hover {
+    color: #f1f1f1;
+}
+
+.sidepanel .closebtn,
+.share_closebtn {
+    color: #818181;
+    text-decoration: none;
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+}
+
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+}
+
+.openbtn:hover {
+    background-color: #444;
+}
+
+button:hover {
+    background-color: #444;
+}
+
+h1 {
+    font-size: 72px;
+}
+
+h2 {
+    font-size: 60px;
+    margin-left: 20px;
+}
+
+.game-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+	
+}
+
+.padding25px{
+	padding: 25px;
+}
+
+.games {
+    display: flex;
+    flex-wrap: wrap;
+   justify-content: center;
+
+}
+.grid {
+    float: left;
+    display: flex;
+    flex-wrap: wrap;
+    width: 400px;
+    height: 400px;
+    background-color: black;
+    border: 5px solid #cacece;
+    border-radius: 5px;
+}
+
+.gamecoantiner {
+    display: flex;
+    justify-content: center;
+}
+
+.side-tab {
+    padding-top: 15px;
+}
+
+.side-item {
+    background-color: green;
+    font-size: 20px;
+    padding: var(--border-zoom) !important;
+    width: 100%;
+    margin-top: 4px;
+    color: white;
+    display: block;
+    border-radius: 0px 15px 15px 0px;
+    border-width: 3px 3px 3px 0px;
+    border-style: solid;
+}
+
+.header {
+    margin: auto;
+    width: 400px;
+}
+
+.grid div {
+    width: var(--full-zoom);
+    height: var(--full-zoom);
+    background-color: #cacece;
+}
+
+.test {
+    color: rgb(255, 0, 0);
+}
+
+
+
+.grid .tile {
+    top: var(--border-zoom);
+    border-radius: var(--border-zoom);
+    animation: spawning var(--anim-speed);
+    left: var(--border-zoom);
+    position: relative;
+    width: var(--tile-zoom);
+    height: var(--tile-zoom);
+    background-color: lightgreen;
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    line-height: var(--full-zoom);
+}
+
+.animate-down {
+    position: relative;
+    animation: animatetop var(--anim-speed);
+}
+
+:root {
+    --anim-move: -100px;
+	--full-zoom: 100px;
+}
+
+#scoreadd{
+	
+	
+	 left: 65%;
+	opacity: 0;
+}
+
+.scoreanimate{
+	padding-left: 8px;
+	animation:  socreanim 1s;
+	
+}
+
+.class_scoreadd{
+	opacity: 0;
+	position: relative;
+}
+
+
+@keyframes socreanim {
+    0% {
+		left: -2.5%;
+        top: -50px; 
+		opacity: 1;
+    }
+    20% {
+        top: 0px;
+		opacity: 1;
+    }
+	 100% {
+        top: 0px;
+		opacity: 0;
+		left: -2.5%;
+    }
+
+}
+
+@keyframes animatetop {
+    from {
+        top: var(--anim-move); 
+    }
+    to {
+        top: 0;
+    }
+}
+
+.animate-up {
+    position: relative;
+    animation: animatebottom var(--anim-speed)
+}
+
+@keyframes animatebottom {
+    from {
+        bottom: var(--anim-move);
+    }
+    to {
+        bottom: 0;
+    }
+}
+
+.animate-left {
+    position: relative;
+    animation: animateright var(--anim-speed)
+}
+
+@keyframes animateright {
+    from {
+        right: var(--anim-move);
+    }
+    to {
+        right: 0;
+    }
+}
+
+.animate-right {
+    position: relative;
+    animation: animateleft var(--anim-speed)
+}
+
+@keyframes animateleft {
+    from {
+        left: var(--anim-move);
+    }
+    to {
+        left: 0;
+    }
+}
+
+@keyframes spawning {
+    from {
+        transform: scale(0)
+    }
+    to {
+        transform: scale(1)
+    }
+}
+
+.animate-pop {
+    border: 5px #cacece;
+    animation: pop var(--anim-speed);
+}
+
+@keyframes pop {
+    from {
+        transform: scale(1)
+    }
+    to {
+        transform: scale(1.175)
+    }
+}
+
+.inline {
+    display: inline-block;
+}
+
+.settingrow {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.settingrow * {
+    padding: 5px;
+}
+
+.scoretab {
+    background-color: gray;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    padding-bottom: 10px;
+    margin-bottom: 0;
+}
+
+.column {
+    float: left;
+    width: 150px;
+    padding-right: 20px;
+}
+
+
+/* Clear floats after the columns */
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+    padding-bottom: 0;
+}
+
+.inline {
+    display: inline;
+}
+
+.result {
+    position: absolute;
+    display: none;
+    left: 45%;
+    right: 1;
+    margin-left: auto;
+    margin-right: auto;
+    width: 0px;
+    height: 0px;
+    z-index: 2;
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.result h1 {
+    margin-left: 20%;
+    font-size: 30px;
+}
+
+.result button {
+    margin-left: 20%;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    background-color: rgb(43, 41, 41);
+    display: block;
+    transition: 0.3s;
+}
+
+.tileContainer{
+	padding-top: 2%;
+	display: flex;
+  	justify-content: center;
+
+}
+
+.scoreContainer{
+	 display: flex;
+  	justify-content: center;
+	padding-bottom: 2%;
+
+}
+
+.gameoverbg{
+	background-color: rgba(255, 0, 0, 0.8);
+	transition: 0.2s;
+}
+.gameoverbg:hover{
+	background-color: rgba(255, 0, 0, 0.4);
+}
+.gamewinbg{
+	background-color: rgba(0, 255, 0, 0.8);
+	transition: 0.8s;
+}
+.gamewinbg:hover{
+	background-color: rgba(0, 255, 0, 0.4);
+}
+
+
+.progress {
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-top: 10px;
+    width: 75%;
+    height: 20px;
+    background-color: #ffffff;
+    color: #ffffff;
+    outline: 1px solid gainsboro;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    font-size: var(--half-zoom);
+ }
+ 
+ .bar {
+    border-radius: 5px;
+    width: 50%;
+    margin-left: -6px;
+    margin-top: -5px;
+    height: 20px;
+    text-align: center;
+    background-color: royalblue;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    transition: width 0.3s cubic-bezier(0,.96,0,.96);
+ }
+
+ .play{
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-left: 10px;
+    background-color: royalblue;
+    color: #ffffff;
+    font-size: var(--half-zoom);
+    border-color: #ffffff;
+ }
+
+ .replaycontrols{
+    display: none;
+ }
+
+#shareoptions{
+	display: none;
+}
