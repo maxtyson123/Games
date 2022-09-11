@@ -3604,7 +3604,7 @@ function loaded() {
 
 	if ( window.location !== window.parent.location ) {
 
-			document.body.innerHTML = "<h1>Please Use The '<a href='https://maxtyson123.github.io/Games/wildcard_2048/'>Official Site</a>' For Best Experience</h1><br><p>(Save.Load breaks when using iframes)</p>"
+			document.body.innerHTML = "<h1>Please Use The '<a href='https://maxtyson123.github.io/Games/Web/wildcard_2048/'>Official Site</a>' For Best Experience</h1><br><p>(Save.Load breaks when using iframes)</p>"
 	}
 
 	function debug(text, bugfixingid) { }
